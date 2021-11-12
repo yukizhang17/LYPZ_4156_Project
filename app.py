@@ -3,6 +3,7 @@ from authlib.integrations.flask_client import OAuth
 from auth0.v3.authentication import GetToken
 from auth0.v3.authentication import Users
 from auth0.v3.authentication import Database
+from database_services.sql_service import SqliteService
 
 import uuid
 import json
@@ -19,30 +20,6 @@ CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
 CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hraHNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
-DATABASE = './db/LYPZ.db'
-
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-@app.route('/', methods=['GET'])
-def home():
-    for user in query_db("select * from user where password = 'mypass'"):
-        print(user)
-
-    return "A"
-
-
-
 
 
 #Generate 32 digit of unique token for each dev
@@ -57,11 +34,10 @@ def generate_apikey():
 def signup():
     form = request.form
     email = form["email"]
-    #emaillist = email.split("@")
     password = form["password"]
     api_key = form["api_key"]
     username = email + "_apikey_" + api_key
-    #username = emaillist[0] + emaillist[1].split(".")[0] + emaillist[1].split(".")[1] 
+    
 
     data = {
         "client_id": CLIENT_ID,
@@ -72,6 +48,14 @@ def signup():
     }
 
     callback = requests.post("https://dev-ntceedrk.us.auth0.com/dbconnections/signup", json = data)
+
+    if callback.status_code == 200:
+        data = callback.json()
+        uid = data['_id']
+        SqliteService.insert("user", {"uid": uid, "email": email, "api_key":api_key, "notification_interval":"monthly"})
+
+
+
 
     return jsonify(callback.json())
 
@@ -104,10 +88,23 @@ def login():
 
 @app.route('/userinfo', methods=['GET'])
 def userinfo():
+    token = request.form["token"]
+    return jsonify(validate_token(token))
+    '''
     try:
         token = request.form["token"]
         user = Users('dev-ntceedrk.us.auth0.com')
         return jsonify(user.userinfo(token))
+    except Exception as e:
+        error = str(e).split(":")
+        return {"code": error[0], "reason": error[1]} 
+    '''
+
+def validate_token(token):
+    try:
+        user = Users('dev-ntceedrk.us.auth0.com')
+        uid = user.userinfo(token)["sub"]
+        return uid.split("|")[1]
     except Exception as e:
         error = str(e).split(":")
         return {"code": error[0], "reason": error[1]} 
