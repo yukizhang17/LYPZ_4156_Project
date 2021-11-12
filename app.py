@@ -1,4 +1,9 @@
 from flask import Flask, render_template, request, jsonify
+from authlib.integrations.flask_client import OAuth
+from auth0.v3.authentication import GetToken
+from auth0.v3.authentication import Users
+from auth0.v3.authentication import Database
+
 import uuid
 import json
 import requests
