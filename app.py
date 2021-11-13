@@ -25,19 +25,33 @@ DB = 'Username-Password-Authentication'
 #Generate 32 digit of unique token for each dev
 @app.route('/generate-apikey', methods=['POST'])
 def generate_apikey():
-    token = uuid.uuid4().hex
+    form = request.form
+    if "email" not in form:
+        return jsonify({"reason": "missing required fields", "status_code": 400})
 
-    return {"api_key": token}
+    email = form['email']
+    rst = SqliteService.select("application", {"email": email})
+    if len(rst) != 0:
+        return jsonify({"api_key": rst[0][0], "status_code": 200})
+
+
+    token = uuid.uuid4().hex
+    SqliteService.insert("application", {"aid": token, "email": email, "verified": 0})
+
+    return jsonify({"api_key": token, "status_code": 201})
     
 
 @app.route('/signup', methods=['POST'])
 def signup():
     form = request.form
+    if "email" not in form or "password" not in form or "api_key" not in form:
+        return jsonify({"reason": "missing required fields", "status_code": 400})
+
+    
     email = form["email"]
     password = form["password"]
     api_key = form["api_key"]
     username = email + "_apikey_" + api_key
-    
 
     data = {
         "client_id": CLIENT_ID,
@@ -54,16 +68,12 @@ def signup():
         uid = data['_id']
         SqliteService.insert("user", {"uid": uid, "email": email, "api_key":api_key, "notification_interval":"monthly"})
 
-
-
-
     return jsonify(callback.json())
 
 @app.route('/login', methods=['GET'])
 def login():
     form = request.form
     email = form["email"]
-    #emaillist = email.split("@")
     api_key = form["api_key"]
     username = email + "_apikey_" + api_key
     password = form["password"]
@@ -80,7 +90,9 @@ def login():
             scope="openid",
             realm=DB
             )
+
         return jsonify(c)
+
     except Exception as e:
         error = str(e).split(":")
         return {"code": error[0], "reason": error[1]}
@@ -108,49 +120,6 @@ def validate_token(token):
     except Exception as e:
         error = str(e).split(":")
         return {"code": error[0], "reason": error[1]} 
-
-
-
-'''
-    form = request.form
-    username = form["username"]
-    password = form["password"]
-
-    data = {
-        "grant_type": "password-realm",
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-        "audience": "https://4156_LYPZ/api",
-        "password": password,
-        "username": username,
-        "realm": "Username-Password-Authentication"
-    }
-
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    #'auth0-forwarded-for': socket.gethostbyname(socket.gethostname())
-
-    callback = requests.post("https://dev-ntceedrk.us.auth0.com/oauth/token", json=data, headers=headers)
-
-    return jsonify(callback.json())
-
-    data = {
-        "client_id": CLIENT_ID,
-        "response_type": "json",
-        "audience": "https://dev-ntceedrk.us.auth0.com/api/v2/"
-    }
-
-    callback = requests.get("https://dev-ntceedrk.us.auth0.com/authorize", params=data)
-    print(type(callback))
-    return str(callback.text)
-
-
-'''
-
-
-
-
 
 
 
