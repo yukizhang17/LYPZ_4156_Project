@@ -13,6 +13,14 @@ options = Options()
 options.add_argument('--headless')
 driver = webdriver.Chrome(options=options)
 
+#driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
+# driver = webdriver.PhantomJS()
+
+#options = webdriver.ChromeOptions()
+#options.add_argument('--headless')
+#chrome_service = Service(ChromeDriverManager().install())
+#driver = webdriver.Chrome(service=chrome_service, options=options)
+
 AMAZON_DOMAIN = "https://www.amazon.com"
 BESTBUY_DOMAIN = "https://www.bestbuy.com/site"
 BESTBUY_API_BASE = "https://api.bestbuy.com/v1/products"

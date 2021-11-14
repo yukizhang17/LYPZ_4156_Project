@@ -1,9 +1,166 @@
 from flask import Flask, render_template, request, jsonify
-import json
 import sqlite3
 from uuid import uuid4
 from database_services.sql_service import SqliteService
-app = Flask(__name__)
+
+
+def get_subscribe_input(form):
+    product = form["product"]
+    type = form["type"]
+
+    # expected_price is optinal field
+    if "expected_price" in form:
+        expected_price = form["expected_price"]
+        if expected_price:
+            expected_price = float(expected_price)
+    else:
+        expected_price = None
+    
+    # subscribe with productID, platform can't be Null,
+    if "platform" not in form and type == "productID":
+        # print("shouldbe here")
+        return (400, "missing required fields")
+        # return (400, "Subscribe with productID, platform can't be Null, try again")
+    elif "platform" in form:
+        platform = form["platform"]
+    else:
+        platform = None
+
+    return (200, {"product": product, "type": type, "platform": platform, "expected_price": expected_price})
+
+
+def subscribe_product(uid, product, type, platform, expected_price):
+    if type == "keyword":
+        # subscirbe based on keyword
+        respond = insert_by_keyword(uid, product, expected_price)
+        
+    elif type == "productID":
+        # gengerate corresponding website
+        website_message = generate_website(platform, product)
+        if website_message[0] == 400:
+            return website_message
+        else:
+            website = website_message[1]
+
+        respond = insert_by_productID(uid, product, website, expected_price)
+        
+    else:
+        return (200, "Incurrect type, keyword or productID.")
+        
+    return respond
+
+def insert_frist_time(product, uid, expected_price, type, website):
+    sid = generate_sid()
+
+    if type == "keyword":
+        subscribe_table = "subscription_keyword"
+        user_subscribe_table = "user_subcription_keyword"
+        respond1 = SqliteService.insert(subscribe_table, {"sid": sid, "keyword": product})
+        respond2 = SqliteService.insert(user_subscribe_table, {"uid": uid, "sid": sid, "expected_price": expected_price})
+    
+    elif type == "productID":
+        subscribe_table = "subscription_product_id"
+        user_subscribe_table = "user_subcription_product_id"
+        respond1 = SqliteService.insert(subscribe_table, {"sid": sid, "product_id": product, "website": website})
+        respond2 = SqliteService.insert(user_subscribe_table, {"uid": uid, "sid": sid, "expected_price": expected_price})
+
+    if respond1 == None and respond2 == None:
+        return (200, "Subscribed successfully!")
+    else:
+        return (400, "Failed Insert product ID to db!")
+
+
+def insert_by_keyword(uid, keyword, expected_price):
+    if not keyword:
+        return (400, "missing keyword")
+
+    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    cursor = sqliteConnection.cursor()
+
+    sql = """ SELECT sid, keyword
+    FROM subscription_keyword
+    WHERE keyword = ?; """
+    val = (keyword,)
+    cursor.execute(sql, val)
+    record = cursor.fetchall()
+    print("record",record)
+
+    if not record: # never been subscribed before 
+        return insert_frist_time(keyword, uid, expected_price, "keyword", None)
+
+    else: # found product in db, keyword been subscribed by someone before
+        sid = record[0][0]
+
+        # check if user subscribed same keyword before
+        sql = """ SELECT uid, expected_price
+        FROM user_subcription_keyword
+        WHERE sid = ? and uid = ?; """
+        val = (sid, uid)
+        cursor.execute(sql, val)
+
+        sub_record = cursor.fetchall()
+        print("record", sub_record)
+
+        if not sub_record: # no subscribe this keyword before
+            SqliteService.insert("user_subcription_keyword", {"sid": sid, "uid": uid, "expected_price": expected_price})
+            return (200, "Subscribed successfully!")
+
+        elif sub_record[0][0] and sub_record[0][1] != expected_price: 
+            # user sub before, now calling with different expected_price
+
+            # update expected_price 
+            SqliteService.update("user_subcription_keyword", {"expected_price": expected_price}, {"sid": sid, "uid": uid})
+
+            return (200, "Subscripted expected price updated!")
+
+        elif sub_record[0][0] and sub_record[0][1] == expected_price:
+            # user subscribed the same product with same expected_price 
+            return (400, "User has subscribed the same keyword!")
+
+    cursor.close()
+      
+def insert_by_productID(uid, productID, website, expected_price):
+    sqliteConnection = SqliteService.get_db()
+    cursor = sqliteConnection.cursor()
+
+    sql = """ SELECT sid, website
+    FROM subscription_product_id 
+    WHERE product_id = ? and website = ?; """
+    val = (productID, website)
+    cursor.execute(sql, val)
+    record = cursor.fetchall()
+
+    if not record: # never been subscribed before 
+        return insert_frist_time(productID, uid, expected_price, "productID", website)
+
+    else: # found product in db, product been subscribed by someone before
+        sid = record[0][0]
+
+        # check if user subscribed same thing before
+        sql = """ SELECT uid, expected_price
+        FROM user_subcription_product_id
+        WHERE sid = ? and uid = ?; """
+        val = (sid, uid)
+        cursor.execute(sql, val)
+        sub_record = cursor.fetchall()
+        print("record", sub_record)
+
+        if not sub_record: # user never subscribe this product before
+            SqliteService.insert("user_subcription_product_id", {"uid": uid, "sid": sid, "expected_price":expected_price})
+            
+            return (200, "Subscribed successfully!")
+
+        elif sub_record[0][0] and sub_record[0][1] != expected_price: # user sub before, now calling with different expected_price
+            # update expected_price 
+            SqliteService.update("user_subcription_product_id", {"expected_price": expected_price}, {"sid": sid, "uid": uid})
+
+            return (200, "Subscripted expected price updated!")
+
+        elif sub_record[0][0] and sub_record[0][1] == expected_price:
+            # user subscribed the same product with same expected_price 
+            return (400, "User has subscribed the same product!")
+
+    cursor.close()
 
 def get_unsubscribe_input(form):
     product = form["product"]
@@ -16,16 +173,9 @@ def get_unsubscribe_input(form):
     if type == "productID" and not "platform" in form:
         return (400, "unsubscribe with productID, platform can't be Null")
 
-
     return (200, {"product": product, "type": type, "platform": platform})
 
 def unsubscribe_product(uid, product, type, platform):
-    # product = request.args.get("product", None)
-    # type = request.args.get("type", None)
-
-    # if not platform and type == "productID":
-    #     return "unsubscribe with productID, platform can't be Null"
-
     if type == "keyword":
         # unsubscirbe based on keyword
         respond = delete_by_keyword(uid, product)
@@ -78,33 +228,30 @@ def delete_by_keyword(uid, keyword):
             return (400, "User never subscribe this keyword!")
 
         elif sub_record[0][0]: 
-            # user sub before, now delete this record from user_subcription_keyword
+            return delete_record(sid, uid, "keyword")
 
-            sql = """ DELETE FROM user_subcription_keyword where sid = ? and uid = ?; """
-            val = (sid, uid)
-            cursor.execute(sql, val)
-            sqliteConnection.commit()
-            
-            # check if other user subscribed the same keyword,
-            # if not, delete it from subscription_keyword as well 
+def delete_record(sid, uid, type):
+    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    cursor = sqliteConnection.cursor()
 
-            sql = """ SELECT uid, expected_price
-            FROM user_subcription_keyword
-            WHERE sid = ?; """
-            val = (sid, )
-            cursor.execute(sql, val)
-            other_sub_record = cursor.fetchall()
-            print("other_sub_record", other_sub_record)
-            
-            if not other_sub_record: # no other user subscribe, delete
-                sql = """ DELETE FROM subscription_keyword where sid = ?; """
-                val = (sid, )
-                cursor.execute(sql, val)
-                sqliteConnection.commit()
+    if type == "keyword":
+        user_sub_table = "user_subcription_keyword"
+        sub_table = "subscription_keyword"
 
-            cursor.close()
-            return (200, "Unsubscribe successfully!")
+    elif type == "productID":
+        user_sub_table = "user_subcription_product_id"
+        sub_table = "subscription_product_id"
 
+    SqliteService.delete(user_sub_table, {"sid": sid, "uid":uid})
+
+    other_sub_record =  SqliteService.select(user_sub_table, {"sid": sid})
+    print("other_sub_record", other_sub_record)
+    
+    if not other_sub_record: # no other user subscribe, delete
+        SqliteService.delete(sub_table, {"sid": sid})
+    
+    cursor.close()
+    return (200, "Unsubscribe successfully!")
 
 def delete_by_productID(uid, productID, website):
     sqliteConnection = sqlite3.connect('db/LYPZ.db')
@@ -140,78 +287,8 @@ def delete_by_productID(uid, productID, website):
 
         elif sub_record[0][0]: 
             # user sub before, now delete this record from user_subcription_product_id
+            return delete_record(sid, uid, "productID")
 
-            sql = """ DELETE FROM user_subcription_product_id where sid = ? and uid = ?; """
-            val = (sid, uid)
-            cursor.execute(sql, val)
-            sqliteConnection.commit()
-            
-            # check if other user subscribed the same product,
-            # if not, delete it from subscription_product_id as well 
-
-
-            sql = """ SELECT uid, expected_price
-            FROM user_subcription_product_id
-            WHERE sid = ?; """
-            val = (sid, )
-            cursor.execute(sql, val)
-            other_sub_record = cursor.fetchall()
-            print("other_sub_record", other_sub_record)
-            
-            if not other_sub_record: # no other user subscribe, delete
-                sql = """ DELETE FROM subscription_product_id where sid = ?; """
-                val = (sid, )
-                cursor.execute(sql, val)
-                sqliteConnection.commit()
-
-            cursor.close()
-            return (200, "Unsubscribe successfully!")
-
-
-
-def get_subscribe_input(form):
-    product = form["product"]
-    type = form["type"]
-
-    if "expected_price" in form:
-        expected_price = form["expected_price"]
-        if expected_price:
-            expected_price = float(expected_price)
-    else:
-        expected_price = None
-    
-
-    if "platform" not in form and type == "productID":
-        print("shouldbe here")
-        return (400, "missing required fields")
-        # return (400, "Subscribe with productID, platform can't be Null, try again")
-    elif "platform" in form:
-        platform = form["platform"]
-    else:
-        platform = None
-
-    return (200, {"product": product, "type": type, "platform": platform, "expected_price": expected_price})
-
-def subscribe_product(uid, product, type, platform, expected_price):
-    if type == "keyword":
-        # subscirbe based on keyword
-        respond = insert_by_keyword(uid, product, expected_price)
-        
-    elif type == "productID":
-        # gengerate corresponding website
-        website_message = generate_website(platform, product)
-        if website_message[0] == 400:
-            return website_message
-        else:
-            website = website_message[1]
-
-        respond = insert_by_productID(uid, product, website, expected_price)
-        
-    else:
-        return (200, "Incurrect type, keyword or productID.")
-        
-
-    return respond
 
 def generate_website(platform, product):
     if platform == "Amazon":
@@ -223,184 +300,7 @@ def generate_website(platform, product):
 
     return (200, website)
 
-def insert_frist_time(cursor, sqliteConnection, keyword, uid, expected_price, type):
-    if type == "keyword":
-        subscribe_table = "subscription_keyword"
-        user_subscribe_table = "user_subcription_keyword"
-    elif type == "productID":
-        subscribe_table = "subscription_productID"
-        user_subscribe_table = "user_subcription_productID"
-    sid = generate_sid()
-
-    cursor.execute('INSERT INTO '+ subscribe_table + 
-    '(sid, keyword)' +
-    'VALUES("'+ sid + '","' + keyword + '");')
-
-    respond1 = sqliteConnection.commit()   
-    if expected_price:
-        cursor.execute('INSERT INTO ' + user_subscribe_table + ' (uid, sid, expected_price)' 
-                        'VALUES(?, ?, ?)', (uid, sid, expected_price))
-        # print("type", type(expected_price))
-    else:
-        cursor.execute('INSERT INTO ' + user_subscribe_table +
-        ' (uid, sid) ' +
-        'VALUES("'+ uid + '","' + sid + '");')
-    respond2 = sqliteConnection.commit()   
-    
-    cursor.close()
-    if respond1 == None and respond2 == None:
-        return (200, "Subscribed successfully!")
-    else:
-        return (400, "Failed Insert product ID to db!")
-
-
-def insert_by_keyword(uid, keyword, expected_price):
-    if not keyword:
-        return (400, "missing keyword")
-
-    sqliteConnection = sqlite3.connect('db/LYPZ.db')
-    cursor = sqliteConnection.cursor()
-
-
-    sql = """ SELECT sid, keyword
-    FROM subscription_keyword
-    WHERE keyword = ?; """
-    val = (keyword,)
-    cursor.execute(sql, val)
-    record = cursor.fetchall()
-
-    print("record",record)
-
-    if not record: # never been subscribed before 
-        return insert_frist_time(cursor, sqliteConnection, keyword, uid, expected_price, "keyword")
-
-    else: # found product in db, keyword been subscribed by someone before
-        sid = record[0][0]
-
-        # check if user subscribed same keyword before
-        sql = """ SELECT uid, expected_price
-        FROM user_subcription_keyword
-        WHERE sid = ? and uid = ?; """
-        val = (sid, uid)
-        cursor.execute(sql, val)
-
-        sub_record = cursor.fetchall()
-        print("record", sub_record)
-
-        if not sub_record: # user never subscribe this keyword before
-            if expected_price:
-                cursor.execute('INSERT INTO user_subcription_keyword'
-                '(uid, sid, expected_price)' 
-                'VALUES(?, ?, ?)', 
-                (uid, sid, expected_price))
-            else:
-                cursor.execute('INSERT INTO user_subcription_keyword'
-                '(uid, sid)'
-                'VALUES(?, ?)', 
-                (uid, sid))
-            sqliteConnection.commit()   
-            cursor.close()
-            return (200, "Subscribed successfully!")
-
-        elif sub_record[0][0] and sub_record[0][1] != expected_price: 
-            # user sub before, now calling with different expected_price
-
-            # update expected_price 
-            sql = """ UPDATE user_subcription_keyword set expected_price = ? where sid = ? and uid = ?; """
-            val = (expected_price, sid, uid)
-            cursor.execute(sql, val)
-            sqliteConnection.commit()
-            cursor.close()
-            return (200, "Subscripted expected price updated!")
-
-        elif sub_record[0][0] and sub_record[0][1] == expected_price:
-            # user subscribed the same product with same expected_price 
-            return (400, "User has subscribed the same keyword!")
-
-
-
-def insert_by_productID(uid, productID, website, expected_price):
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
-
-    sql = """ SELECT sid, website
-    FROM subscription_product_id 
-    WHERE product_id = ? and website = ?; """
-    val = (productID, website)
-    cursor.execute(sql, val)
-    record = cursor.fetchall()
-
-    print("record",record)
-
-    if not record: # never been subscribed before 
-        sid = generate_sid()
-
-        cursor.execute('INSERT INTO subscription_product_id'+ 
-        '(sid, product_id, website)' +
-        'VALUES("'+ sid + '","' + productID + '","' + website + '");')
-    
-        respond1 = sqliteConnection.commit()   
-        if expected_price:
-            cursor.execute('INSERT INTO user_subcription_product_id (uid, sid, expected_price)' 
-                            'VALUES(?, ?, ?)', (uid, sid, expected_price))
-            print("type", type(expected_price))
-        else:
-            cursor.execute('INSERT INTO user_subcription_product_id'+ 
-            '(uid, sid)' +
-            'VALUES("'+ uid + '","' + sid + '");')
-        respond2 = sqliteConnection.commit()   
-        
-        cursor.close()
-        if respond1 == None and respond2 == None:
-            return (200, "Subscribed successfully!")
-        else:
-            return (400, "Failed Insert product ID to db!")
-
-    else: # found product in db, product been subscribed by someone before
-        sid = record[0][0]
-
-        # check if user subscribed same thing before
-        sql = """ SELECT uid, expected_price
-        FROM user_subcription_product_id
-        WHERE sid = ? and uid = ?; """
-        val = (sid, uid)
-        cursor.execute(sql, val)
-
-        sub_record = cursor.fetchall()
-        print("record", sub_record)
-
-        if not sub_record: # user never subscribe this product before
-            if expected_price:
-                cursor.execute('INSERT INTO user_subcription_product_id'
-                '(uid, sid, expected_price)' 
-                'VALUES(?, ?, ?)', 
-                (uid, sid, expected_price))
-            else:
-                cursor.execute('INSERT INTO user_subcription_product_id'
-                '(uid, sid)'
-                'VALUES(?, ?)', 
-                (uid, sid))
-            sqliteConnection.commit()   
-            cursor.close()
-            return (200, "Subscribed successfully!")
-
-        elif sub_record[0][0] and sub_record[0][1] != expected_price: 
-            # user sub before, now calling with different expected_price
-
-            # update expected_price 
-            sql = """ UPDATE user_subcription_product_id set expected_price = ? where sid = ? and uid = ?; """
-            val = (expected_price, sid, uid)
-            cursor.execute(sql, val)
-            sqliteConnection.commit()
-            cursor.close()
-            return (200, "Subscripted expected price updated!")
-
-        elif sub_record[0][0] and sub_record[0][1] == expected_price:
-            # user subscribed the same product with same expected_price 
-            return (400, "User has subscribed the same product!")
-
-       
-        
+  
 def generate_sid():
     sid = str(uuid4())
 

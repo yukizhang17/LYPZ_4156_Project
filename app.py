@@ -28,6 +28,9 @@ CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hraHNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9H
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
 
+@app.route('/', methods=["GET"])
+def home():
+    return "Hello World"
 
 #Generate 32 digit of unique token for each dev
 @app.route('/generate-apikey', methods=['GET', 'POST'])
@@ -66,7 +69,8 @@ def generate_apikey():
 
     if request.method == "POST":
         #If already signup, return error
-        response = signup_request(email, password)
+        response = signup_request(email, password).json()
+        print(response)
         if "statusCode" in response and response["statusCode"] == 400:
             return jsonify(response)
 
