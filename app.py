@@ -136,7 +136,7 @@ def compare():
 
     platform = None
     if "platform" in form:
-        keyword = form["platform"]
+        platform = form["platform"]
 
     res = compare_prices(keyword, item_id, platform)
     return jsonify(res)
