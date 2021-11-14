@@ -9,10 +9,13 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')
-chrome_service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=chrome_service, options=options)
+driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
+
+
+#options = webdriver.ChromeOptions()
+#options.add_argument('--headless')
+#chrome_service = Service(ChromeDriverManager().install())
+#driver = webdriver.Chrome(service=chrome_service, options=options)
 
 AMAZON_DOMAIN = "https://www.amazon.com"
 BESTBUY_DOMAIN = "https://www.bestbuy.com/site"
