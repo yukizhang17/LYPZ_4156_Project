@@ -5,7 +5,7 @@ from auth0.v3.authentication import Users
 from auth0.v3.authentication import Database
 from database_services.sql_service import SqliteService
 from application_services.user_services import *
-from application_services.price_fetching_services import *
+#from application_services.price_fetching_services import *
 from application_services.subscribe import *
 
 
