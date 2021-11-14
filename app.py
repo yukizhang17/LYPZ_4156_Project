@@ -13,6 +13,10 @@ import requests
 import socket
 import sqlite3
 
+import os
+
+file_path = os.path.realpath(__file__)
+print(file_path)
 
 app = Flask(__name__)
 
@@ -82,6 +86,8 @@ def signup():
     email = form["email"]
     password = form["password"]
     api_key = form["api_key"]
+    if not valid_email(email):
+        return jsonify({"reason": "email not valid format", "status_code": 400})
 
     callback = signup_request(email, password, api_key)
 

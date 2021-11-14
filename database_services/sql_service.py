@@ -3,20 +3,24 @@ import json
 import logging
 from flask import g
 import sqlite3
+import os
 
+file_path = os.path.realpath(__file__)
+file_path = "/".join(file_path.split("/")[0: -2])
 
-DATABASE = './db/LYPZ.db'
+DATABASE = file_path + '/db/LYPZ.db'
 
 class SqliteService:
-    def __init__(self):
-        pass
 
     @classmethod
     def get_db(self):
-        db = getattr(g, '_database', None)
-        if db is None:
-            db = g._database = sqlite3.connect(DATABASE)
-        return db
+        conn = None
+        try:
+            conn = sqlite3.connect(DATABASE)
+        except Exception as e:
+            print(e)
+
+        return conn
 
 
     @classmethod
@@ -32,6 +36,9 @@ class SqliteService:
         except Exception as e:
             connection.close()
             raise e
+        finally:
+            connection.close()
+
 
 
 
@@ -61,7 +68,6 @@ class SqliteService:
         wc, args = self.get_where_clause_args(template)
 
         query = "SELECT * FROM " + table_name + " " + wc
-        print(query)
 
         return self.run_sql(query, args, True)
 

@@ -10,6 +10,7 @@ import json
 import requests
 import socket
 import sqlite3
+import re
 
 CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
 CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hraHNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
@@ -77,4 +78,14 @@ def get_user_id(token):
 	response = validate_token(token)
 	if "sub" in response:
 		return response["sub"].split("|")[1]
+	return False
+
+
+#This is copy from website to check if email valid
+def valid_email(email):
+	regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+	# pass the regular expression
+	# and the string into the fullmatch() method
+	if(re.fullmatch(regex, email)):
+	    return True
 	return False
