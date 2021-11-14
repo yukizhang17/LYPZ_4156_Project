@@ -5,6 +5,7 @@ from auth0.v3.authentication import Users
 from auth0.v3.authentication import Database
 from database_services.sql_service import SqliteService
 from application_services.user_services import *
+from application_services.price_fetching_services import *
 
 import uuid
 import json
@@ -34,7 +35,7 @@ def generate_apikey():
     password = form['password']
 
     if request.method == "GET":
-        #Login with Auth0 to see if application exsit
+        #Login with Auth0 to see if application exist
         rst = SqliteService.select("application", {"email": email})
         if len(rst) == 0:
             return jsonify({"error": "user not found", "status_code": 404})
@@ -112,6 +113,33 @@ def userinfo():
 
     return jsonify(validate_token(form["token"]))
 
+@app.route('/compare', methods=['GET'])
+def compare():
+    #compare realtime amazon and bestbuy prices for keyword or item id
+    form = request.form
+    if not validate_all_api_form_fields(["token"], form):
+        return jsonify({"reason": "missing required fields", "status_code": 400})
+    validation_res = validate_token(form["token"])
+    if 'email' not in validation_res:
+        return jsonify(validation_res)
+    
+    if not validate_optional_api_form_fields([["keyword"], ["item_id", "platform"]], form):
+        return jsonify({"reason": "missing required fields", "status_code": 400})
+
+    keyword = None
+    if "keyword" in form:
+        keyword = form["keyword"]
+    
+    item_id = None
+    if "item_id" in form:
+        item_id = form["item_id"]
+
+    platform = None
+    if "platform" in form:
+        keyword = form["platform"]
+
+    res = compare_prices(keyword, item_id, platform)
+    return jsonify(res)
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1')

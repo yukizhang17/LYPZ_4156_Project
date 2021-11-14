@@ -20,6 +20,17 @@ BESTBUY_API_BASE = "https://api.bestbuy.com/v1/products"
 BESTBUY_API_KEY = "nU3Uo9RMMpqKmrhpm2if81bl"
 
 
+#check if at least one list of fields are included in the api form
+def validate_optional_api_form_fields(field_lists, form):
+    for fields in field_lists:
+        all_included = True
+        for field in fields:
+            if field not in form:
+                all_included = False
+        if all_included is True:
+            return True
+    return False
+    
 def reject_outliers(data, m=2):
     # choose the median of the first 10 items as reference sample
     d = np.abs(data - np.median(data[:10]))

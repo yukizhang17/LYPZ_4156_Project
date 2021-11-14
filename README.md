@@ -17,7 +17,7 @@ Class Project for COMS 4156 Advanced Software Engineering  Fall 2021.
   ```
 * Option 2
   ```
-  pip3 install -r requirments.txt
+  pip3 install -r requirements.txt
   ``` 
 3. Start the API service
     ```
