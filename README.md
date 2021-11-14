@@ -173,7 +173,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    Input: access_token=YOUR_TOKEN&product=YOUR_KEYWORD&type=keyword
 
   Restriction:
-    > Fields access_token, product, type are required.
+      > Fields access_token, product, type are required.
 
    ```
    
@@ -202,9 +202,9 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID&platform=YOUR_PLATFORM&expected_price=YOUR_PRICE
   
   Restriction:
-    > Fields access_token, product, type, platform are required.
-    > YOUR_PLATFORM must be either Amazon or BestBuy.
-    > Field expected_price is optional.
+      > Fields access_token, product, type, platform are required.
+      > YOUR_PLATFORM must be either Amazon or BestBuy.
+      > Field expected_price is optional.
 
    ```
    
@@ -230,10 +230,11 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
      
    Content-Type: application/x-www-form-urlencoded
 
-   Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID
+   Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID&expected_price=YOUR_PRICE
    
   Restriction:
-    > Fields access_token, product, type are required.
+      > Fields access_token, product, type are required.
+      > Field expected_price is optional.
    ```
    
    **Response Sample:**
@@ -261,8 +262,8 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID&platform=YOUR_PLATFORM
 
   Restriction:
-    > Fields access_token, product, type, platform are required.
-    > YOUR_PLATFORM must be either Amazon or BestBuy.
+      > Fields access_token, product, type, platform are required.
+      > YOUR_PLATFORM must be either Amazon or BestBuy.
    ```
    
    **Response Sample:**
