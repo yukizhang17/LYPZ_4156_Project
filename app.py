@@ -4,6 +4,7 @@ from auth0.v3.authentication import GetToken
 from auth0.v3.authentication import Users
 from auth0.v3.authentication import Database
 from database_services.sql_service import SqliteService
+from application_services.user_services import *
 
 import uuid
 import json
@@ -14,7 +15,6 @@ import sqlite3
 
 app = Flask(__name__)
 
-oauth = OAuth(app)
 
 CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
 CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hraHNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
@@ -23,45 +23,65 @@ DB = 'Username-Password-Authentication'
 
 
 #Generate 32 digit of unique token for each dev
-@app.route('/generate-apikey', methods=['POST'])
+@app.route('/generate-apikey', methods=['GET', 'POST'])
 def generate_apikey():
+    #check if all require information are presented
     form = request.form
-    if "email" not in form:
+    if not validate_all_api_form_fields(["email", "password"], form):
         return jsonify({"reason": "missing required fields", "status_code": 400})
 
     email = form['email']
-    rst = SqliteService.select("application", {"email": email})
-    if len(rst) != 0:
-        return jsonify({"api_key": rst[0][0], "status_code": 200})
+    password = form['password']
+
+    if request.method == "GET":
+        #Login with Auth0 to see if application exsit
+        rst = SqliteService.select("application", {"email": email})
+        if len(rst) == 0:
+            return jsonify({"error": "user not found", "status_code": 404})
+
+        response = login_request(email + "_APP", password)
+
+        if "access_token" not in response:
+            return jsonify(response)
+        #If email already verified, return api key
+        if rst[0][2] == 1:
+            return jsonify({"api_key": rst[0][1], "status_code": 200})
+
+        #If email verified, update db and return api_key
+        response = validate_token(response["access_token"])
+
+        if not response["email_verified"]:
+            return jsonify({"error": "Please verify your email", "status_code": 401})
+
+        SqliteService.update("application", {"verified": 1}, {"email": email})
+        return jsonify({"api_key": rst[0][1], "status_code": 200})
 
 
-    token = uuid.uuid4().hex
-    SqliteService.insert("application", {"aid": token, "email": email, "verified": 0})
+    if request.method == "POST":
+        #If already signup, return error
+        response = signup_request(email, password)
+        if "statusCode" in response and response["statusCode"] == 400:
+            return jsonify(response)
 
-    return jsonify({"api_key": token, "status_code": 201})
+        #generate api_key
+        token = uuid.uuid4().hex
+        SqliteService.insert("application", {"email": email, "api_key": token, "verified": 0})
+
+        return jsonify({"message": "token created, please verified your email before receiving the token", "status_code": 200})
+        #return jsonify({"api_key": token, "status_code": 201})
     
 
 @app.route('/signup', methods=['POST'])
 def signup():
     form = request.form
-    if "email" not in form or "password" not in form or "api_key" not in form:
+    if not validate_all_api_form_fields(["email", "password", "api_key"], form):
         return jsonify({"reason": "missing required fields", "status_code": 400})
 
-    
     email = form["email"]
     password = form["password"]
     api_key = form["api_key"]
-    username = email + "_apikey_" + api_key
 
-    data = {
-        "client_id": CLIENT_ID,
-        "email": email,
-        "password": password,
-        "connection": DB,
-        "username": username
-    }
-
-    callback = requests.post("https://dev-ntceedrk.us.auth0.com/dbconnections/signup", json = data)
+    callback = signup_request(email, password, api_key)
 
     if callback.status_code == 200:
         data = callback.json()
@@ -73,54 +93,21 @@ def signup():
 @app.route('/login', methods=['GET'])
 def login():
     form = request.form
-    email = form["email"]
-    api_key = form["api_key"]
-    username = email + "_apikey_" + api_key
+    if not validate_all_api_form_fields(["email", "password", "api_key"], form):
+        return jsonify({"reason": "missing required fields", "status_code": 400})
+
+    username = form["email"] + "_apikey_" + form["api_key"]
     password = form["password"]
 
-    token = GetToken('dev-ntceedrk.us.auth0.com')
-
-    try:
-        c = token.login(
-            client_id=CLIENT_ID,
-            client_secret = CLIENT_SECRET,
-            audience=API,
-            username=username,
-            password=password,
-            scope="openid",
-            realm=DB
-            )
-
-        return jsonify(c)
-
-    except Exception as e:
-        error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]}
-
+    return jsonify(login_request(username, password))
 
 @app.route('/userinfo', methods=['GET'])
 def userinfo():
-    token = request.form["token"]
-    return jsonify(validate_token(token))
-    '''
-    try:
-        token = request.form["token"]
-        user = Users('dev-ntceedrk.us.auth0.com')
-        return jsonify(user.userinfo(token))
-    except Exception as e:
-        error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]} 
-    '''
+    form = request.form
+    if not validate_all_api_form_fields(["token"], form):
+        return jsonify({"reason": "missing required fields", "status_code": 400})
 
-def validate_token(token):
-    try:
-        user = Users('dev-ntceedrk.us.auth0.com')
-        uid = user.userinfo(token)["sub"]
-        return uid.split("|")[1]
-    except Exception as e:
-        error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]} 
-
+    return jsonify(validate_token(form["token"]))
 
 
 if __name__ == '__main__':
