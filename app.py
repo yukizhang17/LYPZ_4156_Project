@@ -70,9 +70,10 @@ def generate_apikey():
         return jsonify({"message": "token created, please verified your email before receiving the token", "status_code": 200})
         #return jsonify({"api_key": token, "status_code": 201})
     
-
+#user signup end point
 @app.route('/signup', methods=['POST'])
 def signup():
+    #check if all require information are presented
     form = request.form
     if not validate_all_api_form_fields(["email", "password", "api_key"], form):
         return jsonify({"reason": "missing required fields", "status_code": 400})
@@ -92,6 +93,7 @@ def signup():
 
 @app.route('/login', methods=['GET'])
 def login():
+    #check if all require information are presented
     form = request.form
     if not validate_all_api_form_fields(["email", "password", "api_key"], form):
         return jsonify({"reason": "missing required fields", "status_code": 400})
@@ -103,6 +105,7 @@ def login():
 
 @app.route('/userinfo', methods=['GET'])
 def userinfo():
+    #check if all require information are presented
     form = request.form
     if not validate_all_api_form_fields(["token"], form):
         return jsonify({"reason": "missing required fields", "status_code": 400})

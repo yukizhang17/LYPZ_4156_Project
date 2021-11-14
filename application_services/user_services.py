@@ -23,6 +23,7 @@ def validate_all_api_form_fields(fields, form):
 			return False
 	return True
 
+#Take username and password to perform login request
 def login_request(username, password):
     token = GetToken('dev-ntceedrk.us.auth0.com')
 
@@ -43,6 +44,7 @@ def login_request(username, password):
         error = str(e).split(":")
         return {"code": error[0], "reason": error[1]}
 
+#Take username and password and api key (None is for application) to perform login request
 def signup_request(email, password, api_key=None):
 	if api_key:
 		username = email + "_apikey_" + api_key
@@ -60,6 +62,7 @@ def signup_request(email, password, api_key=None):
 	callback = requests.post("https://dev-ntceedrk.us.auth0.com/dbconnections/signup", json = data)
 	return callback
 
+#Validate access token
 def validate_token(token):
     try:
         user = Users('dev-ntceedrk.us.auth0.com')
@@ -69,6 +72,7 @@ def validate_token(token):
         error = str(e).split(":")
         return {"code": error[0], "reason": error[1]} 
 
+#get user id using access token
 def get_user_id(token):
 	response = validate_token(token)
 	if "sub" in response:
