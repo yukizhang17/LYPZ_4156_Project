@@ -6,6 +6,8 @@ from auth0.v3.authentication import Database
 from database_services.sql_service import SqliteService
 from application_services.user_services import *
 from application_services.price_fetching_services import *
+from application_services.subscribe import *
+
 
 import uuid
 import json
@@ -146,6 +148,49 @@ def compare():
 
     res = compare_prices(keyword, item_id, platform)
     return jsonify(res)
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    form = request.form
+    if not validate_all_api_form_fields(["access_token", "product", "type"], form):
+        return jsonify({"reason": "missing required fields", "status_code": 400})
+
+    validation_res = validate_token(form["access_token"])
+    if 'email' not in validation_res:
+        return jsonify(validation_res)
+    else:
+        uid = get_user_id(form["access_token"])
+
+    valid_message = get_subscribe_input(form)
+    print(valid_message)
+    if valid_message[0] == 400:
+        return jsonify({"reason": valid_message[1], "status_code": 400})
+
+    respond = subscribe_product(uid, valid_message[1]["product"], valid_message[1]["type"], valid_message[1]["platform"], valid_message[1]["expected_price"])
+    print("respond",respond)
+    return jsonify({"reason": respond[1], "status_code": respond[0]})
+
+@app.route('/unsubscribe', methods=['POST'])
+def unsubscribe():
+    form = request.form
+    if not validate_all_api_form_fields(["access_token", "product", "type"], form):
+        return jsonify({"reason": "missing required fields", "status_code": 400})
+
+    validation_res = validate_token(form["access_token"])
+    if 'email' not in validation_res:
+        return jsonify(validation_res)
+    else:
+        uid = get_user_id(form["access_token"])
+
+    valid_message = get_unsubscribe_input(form)
+    if valid_message[0] == 400:
+        return jsonify({"reason": valid_message[1], "status_code": 400})
+
+    respond = unsubscribe_product(uid, valid_message[1]["product"], valid_message[1]["type"], valid_message[1]["platform"])
+    print("respond",respond)
+    return jsonify({"reason": respond[1], "status_code": respond[0]})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1')
