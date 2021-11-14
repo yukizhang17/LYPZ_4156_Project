@@ -1,5 +1,5 @@
 # 4156_Project (LYPZ)
-Class Project for COMS 4156 Advanced Software Engineering  Fall 2021.
+Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
 
 ## Usage:
 ### Installation:
@@ -160,6 +160,113 @@ Class Project for COMS 4156 Advanced Software Engineering  Fall 2021.
       "updated_at": YOUR_LOG_IN_TIME
     }
    ```
+  
+  ### 5. Subscribe with keyword
+   
+   **HTTP Request:**
+   
+   ```
+   POST http://localhost:5000/subscribe
+     
+   Content-Type: application/x-www-form-urlencoded
+
+   Input: access_token=YOUR_TOKEN&product=YOUR_KEYWORD&type=keyword
+   ```
+   
+   **Response Sample:**
+   ```
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+      "reason": "Subscribed successfully!",
+      "status_code": 200
+    }
+     
+    Restriction:
+      > Fields access_token, product, type are required.
+   ```
+   
+   ## 
+
+   ### 6. Subscribe with productID
+   
+   **HTTP Request:**
+   
+   ```
+   POST http://localhost:5000/subscribe
+     
+   Content-Type: application/x-www-form-urlencoded
+
+   Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID&platform=YOUR_PLATFORM&expected_price=YOUR_PRICE
+   ```
+   
+   **Response Sample:**
+   ```
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+      "reason": "Subscribed successfully!",
+      "status_code": 200
+    }
+    Restriction:
+      > Fields access_token, product, type, platform are required.
+      > YOUR_PLATFORM must be either Amazon or BestBuy.
+      > Field expected_price is optional.
+   ```
+   
+   ## 
+
+   ### 7. Subscribe with keyword
+   
+   **HTTP Request:**
+   
+   ```
+   POST http://localhost:5000/unsubscribe
+     
+   Content-Type: application/x-www-form-urlencoded
+
+   Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID
+   ```
+   
+   **Response Sample:**
+   ```
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+      "reason": "Unsubscribe successfully!",
+      "status_code": 200
+    }
+    Restriction:
+      > Fields access_token, product, type are required.
+   ```
+   
+   ## 
+
+   ### 8. Subscribe with productID
+   
+   **HTTP Request:**
+   
+   ```
+   POST http://localhost:5000/unsubscribe
+     
+   Content-Type: application/x-www-form-urlencoded
+
+   Input: access_token=YOUR_TOKEN&product=YOUR_PRODUCTID&type=productID&platform=YOUR_PLATFORM
+   ```
+   
+   **Response Sample:**
+   ```
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+      "reason": "Unsubscribe successfully!",
+      "status_code": 200
+    }
+    Restriction:
+      > Fields access_token, product, type, platform are required.
+      > YOUR_PLATFORM must be either Amazon or BestBuy.
+   ```
+
  
    
    
