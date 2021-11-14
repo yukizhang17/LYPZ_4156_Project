@@ -9,8 +9,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
-
+#driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
+driver = webdriver.PhantomJS()
 
 #options = webdriver.ChromeOptions()
 #options.add_argument('--headless')
