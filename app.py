@@ -147,6 +147,10 @@ def compare():
         platform = form["platform"]
 
     res = compare_prices(keyword, item_id, platform)
+
+    if res is None:
+        return jsonify({"reason": "unable to fetch prices, please try again", "status_code": 400})
+
     return jsonify(res)
 
 @app.route('/subscribe', methods=['POST'])

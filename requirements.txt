@@ -16,5 +16,5 @@ PyMySQL==1.0.2
 requests==2.26.0
 urllib3==1.26.7
 Werkzeug==2.0.2
-selenium==4.0.0
+selenium==3.8.0
 webdriver-manager==3.5.2
