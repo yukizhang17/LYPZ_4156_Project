@@ -17,9 +17,7 @@ for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
 # use selenium to fetch web page when it is fully loaded
 import undetected_chromedriver as uc
 
-uc.install(
-    executable_path='/app/.chromedriver/bin/chromedriver',
-)
+uc.ChromeDriverManager.executable_path = '/app/.chromedriver/bin/chromedriver'
 
 options = uc.ChromeOptions()
 options.add_argument('--headless')
