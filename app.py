@@ -1,8 +1,4 @@
-from flask import Flask, render_template, request, jsonify, g
-from authlib.integrations.flask_client import OAuth
-from auth0.v3.authentication import GetToken
-from auth0.v3.authentication import Users
-from auth0.v3.authentication import Database
+from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
 from application_services.user_services import validate_token, login_request, \
     signup_request, validate_all_api_form_fields, get_user_id, valid_email
@@ -10,15 +6,8 @@ from application_services.user_services import validate_token, login_request, \
 #     validate_optional_api_form_fields
 from application_services.subscribe import get_subscribe_input, \
     subscribe_product, get_unsubscribe_input, unsubscribe_product
-
 import uuid
-import json
-import requests
-import socket
-import sqlite3
-
 import os
-
 
 file_path = os.path.realpath(__file__)
 print(file_path)
@@ -27,7 +16,8 @@ app = Flask(__name__)
 
 
 CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
-CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hraHNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
+CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hra' + \
+                'HNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
 
@@ -85,7 +75,7 @@ def generate_apikey():
             "email": email, "api_key": token, "verified": 0})
 
         return jsonify({
-            "message": "token created, please verified your email before receiving the token",
+            "message": "token created, please verified your email ",
             "status_code": 200})
         # return jsonify({"api_key": token, "status_code": 201})
 

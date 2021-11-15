@@ -126,7 +126,9 @@ class SqliteService:
         return res
 
     @classmethod
-    def find_in_condition(self, table_name, select_vars, in_variable, in_values):
+    def find_in_condition(
+        self, table_name, select_vars, in_variable, in_values
+    ):
 
         select_clause = "*"
         if select_vars is not None:
@@ -136,7 +138,7 @@ class SqliteService:
 
         in_values_clause = ",".join(in_values)
         query = "SELECT " + select_clause + " FROM " + \
-            db_schema + "." + table_name + " WHERE " + \
+            table_name + " WHERE " + \
             in_variable + " in (" + in_values_clause + ")"
 
         res = self.run_sql(query)

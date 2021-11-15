@@ -7,7 +7,11 @@ currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
-from database_services.sql_service import *
+try:
+    from database_services.sql_service import SqliteService
+except Exception:
+    raise
+
 
 class Test_TestSqlService(unittest.TestCase):
     def setUp(self):
@@ -17,7 +21,10 @@ class Test_TestSqlService(unittest.TestCase):
         email = uuid.uuid4().hex + "@gmail.com"
         apikey = uuid.uuid4().hex
 
-        SqliteService.insert("application", {"email": email, "api_key": apikey, "verified": 0})
+        SqliteService.insert(
+            "application",
+            {"email": email, "api_key": apikey, "verified": 0}
+            )
 
         data = SqliteService.select("application", {"email": email})
         self.assertTrue(len(data) == 1)
