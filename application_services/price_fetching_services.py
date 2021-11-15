@@ -7,12 +7,11 @@ from datetime import datetime
 
 # use selenium to fetch web page when it is fully loaded
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+import undetected_chromedriver as uc
 
-options = Options()
-options.add_argument('--headless')
-options.add_argument("window-size=1400,900")
-driver = webdriver.Chrome(options=options)
+options = webdriver.ChromeOptions() 
+options.headless = True
+driver = uc.Chrome(options=options)
 
 #driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
 # driver = webdriver.PhantomJS()
