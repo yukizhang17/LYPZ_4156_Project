@@ -17,11 +17,11 @@ for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
 # use selenium to fetch web page when it is fully loaded
 import undetected_chromedriver as uc
 
-uc.ChromeDriverManager.executable_path = '/app/.chromedriver/bin/chromedriver'
+CHROME_DRIVER_EXE_PATH = '/app/.chromedriver/bin/chromedriver'
 
-options = uc.ChromeOptions()
+options = uc.ChromeOptions(executable_path=CHROME_DRIVER_EXE_PATH)
 options.add_argument('--headless')
-driver = uc.Chrome(options=options)
+driver = uc.Chrome(options=options, executable_path=CHROME_DRIVER_EXE_PATH)
 
 # driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
 # driver = webdriver.PhantomJS()
