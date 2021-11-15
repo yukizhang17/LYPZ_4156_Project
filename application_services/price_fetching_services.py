@@ -20,7 +20,7 @@ import undetected_chromedriver as uc
 options = uc.ChromeOptions()
 options.headless=True
 options.add_argument('--headless')
-chrome = uc.Chrome(options=options)
+chrome = uc.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
 
 # driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
 # driver = webdriver.PhantomJS()
