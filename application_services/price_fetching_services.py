@@ -13,7 +13,7 @@ options = webdriver.ChromeOptions()
 options.headless = True
 driver = uc.Chrome(options=options)
 
-#driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
+# driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
 # driver = webdriver.PhantomJS()
 
 #options = webdriver.ChromeOptions()
