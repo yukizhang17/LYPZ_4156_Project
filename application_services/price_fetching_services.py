@@ -29,9 +29,8 @@ from datetime import datetime
 import sys
 from selenium import webdriver
 
-# driver = webdriver.PhantomJS(
-#     'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-# )
+# PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
+# driver = webdriver.PhantomJS(PANTHOMJS_PATH)
 sys.path.append(
     '/home/ec2-user/.nvm/versions/node/v17.1.0/' +
     'lib/node_modules/phantomjs-prebuilt/bin'

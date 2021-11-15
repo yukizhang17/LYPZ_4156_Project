@@ -19,7 +19,13 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
   ```
   pip3 install -r requirements.txt
   ``` 
-3. Start the API service
+3. Add phantomjs executable path to PATH or in file \application_services\price_fetching_services.py replace the webdriver initialization step with the following:
+
+    ```
+    PANTHOMJS_PATH = 'your//path//to//phantomjs.exe'
+    driver = webdriver.PhantomJS(PANTHOMJS_PATH)
+    ```
+4. Start the API service
     ```
     python3 app.py
     ```
