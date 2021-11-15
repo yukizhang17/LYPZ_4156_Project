@@ -1,0 +1,328 @@
+{
+	"id": "ed6fdbfe-ab01-4d0d-aef6-f901f6ff1e5e",
+	"name": "Subscribe/Unsubscribe",
+	"timestamp": "2021-11-15T23:08:27.926Z",
+	"collection_id": "17669151-f7a9e1a0-0acc-403d-a564-44df4dab9ad9",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 10,
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "46c4a763-ba4e-4e4d-9ee9-31b4a1f183b8",
+			"name": "subscribe_with_keyword",
+			"url": "http://127.0.0.1:5000/subscribe",
+			"time": 959,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"subscribe_with_keyword": true
+			},
+			"testPassFailCounts": {
+				"subscribe_with_keyword": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				959
+			],
+			"allTests": [
+				{
+					"subscribe_with_keyword": true
+				}
+			]
+		},
+		{
+			"id": "a739f053-c9cf-4cc8-8a42-154eb47fd093",
+			"name": "subscribe_with_keyword_user2",
+			"url": "http://127.0.0.1:5000/subscribe",
+			"time": 634,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"subscribe_with_keyword_user2": true
+			},
+			"testPassFailCounts": {
+				"subscribe_with_keyword_user2": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				634
+			],
+			"allTests": [
+				{
+					"subscribe_with_keyword_user2": true
+				}
+			]
+		},
+		{
+			"id": "3135aa4f-f818-48d1-962f-bc024241e0f3",
+			"name": "subscribe_with_productID_BestBuy",
+			"url": "http://127.0.0.1:5000/subscribe",
+			"time": 1012,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"subscribe_with_productID_BestBuy": true
+			},
+			"testPassFailCounts": {
+				"subscribe_with_productID_BestBuy": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				1012
+			],
+			"allTests": [
+				{
+					"subscribe_with_productID_BestBuy": true
+				}
+			]
+		},
+		{
+			"id": "a74308a9-a1da-44d0-9642-9d7ba9c8fb01",
+			"name": "subscribe_with_productID_Amazon",
+			"url": "http://127.0.0.1:5000/subscribe",
+			"time": 636,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"subscribe_with_productID_Amazon": true
+			},
+			"testPassFailCounts": {
+				"subscribe_with_productID_Amazon": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				636
+			],
+			"allTests": [
+				{
+					"subscribe_with_productID_Amazon": true
+				}
+			]
+		},
+		{
+			"id": "eec6d6e8-90c5-4329-89ef-fe404f683ba2",
+			"name": "subscribe_with_productID_user2",
+			"url": "http://127.0.0.1:5000/subscribe",
+			"time": 640,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"subscribe_with_productID_user2": true
+			},
+			"testPassFailCounts": {
+				"subscribe_with_productID_user2": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				640
+			],
+			"allTests": [
+				{
+					"subscribe_with_productID_user2": true
+				}
+			]
+		},
+		{
+			"id": "ea9f7324-e9c8-44fd-a137-b37b7732e29e",
+			"name": "unsubscribe_with_keyword",
+			"url": "http://127.0.0.1:5000/unsubscribe",
+			"time": 721,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"unsubscribe_with_keyword": true
+			},
+			"testPassFailCounts": {
+				"unsubscribe_with_keyword": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				721
+			],
+			"allTests": [
+				{
+					"unsubscribe_with_keyword": true
+				}
+			]
+		},
+		{
+			"id": "1c06da17-3071-438f-8ed8-0306ae0e5f11",
+			"name": "unsubscribe_with_keyword_user2",
+			"url": "http://127.0.0.1:5000/unsubscribe",
+			"time": 592,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"unsubscribe_with_keyword_user2": true
+			},
+			"testPassFailCounts": {
+				"unsubscribe_with_keyword_user2": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				592
+			],
+			"allTests": [
+				{
+					"unsubscribe_with_keyword_user2": true
+				}
+			]
+		},
+		{
+			"id": "fad8bf98-3738-44e8-9b12-717962f75ee9",
+			"name": "unsubscribe_with_productID_BestBuy",
+			"url": "http://127.0.0.1:5000/unsubscribe",
+			"time": 940,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"unsubscribe_with_productID_BestBuy": true
+			},
+			"testPassFailCounts": {
+				"unsubscribe_with_productID_BestBuy": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				940
+			],
+			"allTests": [
+				{
+					"unsubscribe_with_productID_BestBuy": true
+				}
+			]
+		},
+		{
+			"id": "b81665bb-7030-41b6-90e6-b019feeb413e",
+			"name": "unsubscribe_with_productID_Amazon",
+			"url": "http://127.0.0.1:5000/unsubscribe",
+			"time": 320,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"unsubscribe_with_productID_Amazon": true
+			},
+			"testPassFailCounts": {
+				"unsubscribe_with_productID_Amazon": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				320
+			],
+			"allTests": [
+				{
+					"unsubscribe_with_productID_Amazon": true
+				}
+			]
+		},
+		{
+			"id": "8c22240f-ea96-4708-b569-5ad2bb1fd686",
+			"name": "unsubscribe_with_productID_user2",
+			"url": "http://127.0.0.1:5000/unsubscribe",
+			"time": 552,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"unsubscribe_with_productID_user2": true
+			},
+			"testPassFailCounts": {
+				"unsubscribe_with_productID_user2": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				552
+			],
+			"allTests": [
+				{
+					"unsubscribe_with_productID_user2": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 7006,
+	"collection": {
+		"requests": [
+			{
+				"id": "46c4a763-ba4e-4e4d-9ee9-31b4a1f183b8",
+				"method": "POST"
+			},
+			{
+				"id": "a739f053-c9cf-4cc8-8a42-154eb47fd093",
+				"method": "POST"
+			},
+			{
+				"id": "3135aa4f-f818-48d1-962f-bc024241e0f3",
+				"method": "POST"
+			},
+			{
+				"id": "a74308a9-a1da-44d0-9642-9d7ba9c8fb01",
+				"method": "POST"
+			},
+			{
+				"id": "eec6d6e8-90c5-4329-89ef-fe404f683ba2",
+				"method": "POST"
+			},
+			{
+				"id": "ea9f7324-e9c8-44fd-a137-b37b7732e29e",
+				"method": "POST"
+			},
+			{
+				"id": "1c06da17-3071-438f-8ed8-0306ae0e5f11",
+				"method": "POST"
+			},
+			{
+				"id": "fad8bf98-3738-44e8-9b12-717962f75ee9",
+				"method": "POST"
+			},
+			{
+				"id": "b81665bb-7030-41b6-90e6-b019feeb413e",
+				"method": "POST"
+			},
+			{
+				"id": "8c22240f-ea96-4708-b569-5ad2bb1fd686",
+				"method": "POST"
+			}
+		]
+	}
+}
