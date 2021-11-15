@@ -4,23 +4,23 @@ import numpy as np
 import traceback
 from bs4 import BeautifulSoup
 from datetime import datetime
-import os
+# import os
 
-CHROME_DRIVER_PATH = '/app/.chromedriver'
-os.chmod(CHROME_DRIVER_PATH, 0o777)
-for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
-	for dir in [os.path.join(root,d) for d in dirs]:
-		os.chmod(dir, 0o777)
-	for file in [os.path.join(root, f) for f in files]:
-		os.chmod(file, 0o777)
+# CHROME_DRIVER_PATH = '/app/.chromedriver'
+# os.chmod(CHROME_DRIVER_PATH, 0o777)
+# for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
+# 	for dir in [os.path.join(root,d) for d in dirs]:
+# 		os.chmod(dir, 0o777)
+# 	for file in [os.path.join(root, f) for f in files]:
+# 		os.chmod(file, 0o777)
 
 # use selenium to fetch web page when it is fully loaded
-from selenium import webdriver
 import undetected_chromedriver as uc
 
-options = webdriver.ChromeOptions() 
-options.headless = True
-driver = uc.Chrome(options=options)
+options = uc.ChromeOptions()
+options.headless=True
+options.add_argument('--headless')
+chrome = uc.Chrome(options=options)
 
 # driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
 # driver = webdriver.PhantomJS()
