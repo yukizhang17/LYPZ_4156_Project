@@ -2,22 +2,3 @@
 .DS_Store
 .DS_Store
 .DS_Store
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-
-# zip helper file
-zip_eb.py
-*.zip
-*.exe
-venv/*
-
-worker.py
-
-*/__pycache__
-
-application.py
-
-*.log
