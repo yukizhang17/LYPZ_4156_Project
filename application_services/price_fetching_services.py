@@ -21,6 +21,9 @@ CHROME_DRIVER_EXE_PATH = '/app/.chromedriver/bin/chromedriver'
 
 options = uc.ChromeOptions(executable_path=CHROME_DRIVER_EXE_PATH)
 options.add_argument('--headless')
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--no-sandbox")
+options.add_argument('--disable-gpu')
 driver = uc.Chrome(options=options, executable_path=CHROME_DRIVER_EXE_PATH)
 
 # driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
