@@ -1,0 +1,14 @@
+{
+  "name": "whispering-peak-99211",
+  "version": "1.0.0",
+  "description": "Class Project for COMS 4156 Advanced Software Engineering Fall 2021.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install phantomjs-prebuilt --global"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "14.x"
+  }
+}
