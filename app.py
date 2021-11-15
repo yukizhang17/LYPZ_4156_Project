@@ -6,8 +6,8 @@ from auth0.v3.authentication import Database
 from database_services.sql_service import SqliteService
 from application_services.user_services import validate_token, login_request, \
     signup_request, validate_all_api_form_fields, get_user_id, valid_email
-from application_services.price_fetching_services import compare_prices, \
-    validate_optional_api_form_fields
+# from application_services.price_fetching_services import compare_prices, \
+#     validate_optional_api_form_fields
 from application_services.subscribe import get_subscribe_input
 from application_services.subscribe import subscribe_product
 from application_services.subscribe import get_unsubscribe_input
@@ -130,54 +130,54 @@ def userinfo():
     return jsonify(validate_token(form["token"]))
 
 
-@app.route('/compare', methods=['GET'])
-def compare():
-    # compare realtime amazon and bestbuy prices for keyword or item id
-    form = request.form
-    if not validate_all_api_form_fields(["token"], form):
-        return jsonify(
-            {
-                "reason": "missing required fields",
-                "status_code": 400
-            }
-        )
-    validation_res = validate_token(form["token"])
-    if 'email' not in validation_res:
-        return jsonify(validation_res)
+# @app.route('/compare', methods=['GET'])
+# def compare():
+#     # compare realtime amazon and bestbuy prices for keyword or item id
+#     form = request.form
+#     if not validate_all_api_form_fields(["token"], form):
+#         return jsonify(
+#             {
+#                 "reason": "missing required fields",
+#                 "status_code": 400
+#             }
+#         )
+#     validation_res = validate_token(form["token"])
+#     if 'email' not in validation_res:
+#         return jsonify(validation_res)
 
-    if not validate_optional_api_form_fields(
-        [["keyword"], ["item_id", "platform"]], form
-    ):
-        return jsonify(
-            {
-                "reason": "missing required fields",
-                "status_code": 400
-            }
-        )
+#     if not validate_optional_api_form_fields(
+#         [["keyword"], ["item_id", "platform"]], form
+#     ):
+#         return jsonify(
+#             {
+#                 "reason": "missing required fields",
+#                 "status_code": 400
+#             }
+#         )
 
-    keyword = None
-    if "keyword" in form:
-        keyword = form["keyword"]
+#     keyword = None
+#     if "keyword" in form:
+#         keyword = form["keyword"]
 
-    item_id = None
-    if "item_id" in form:
-        item_id = form["item_id"]
+#     item_id = None
+#     if "item_id" in form:
+#         item_id = form["item_id"]
 
-    platform = None
-    if "platform" in form:
-        platform = form["platform"]
+#     platform = None
+#     if "platform" in form:
+#         platform = form["platform"]
 
-    res = compare_prices(keyword, item_id, platform)
+#     res = compare_prices(keyword, item_id, platform)
 
-    if res is None:
-        return jsonify(
-            {
-                "reason": "unable to fetch prices, please try again",
-                "status_code": 400
-            }
-        )
+#     if res is None:
+#         return jsonify(
+#             {
+#                 "reason": "unable to fetch prices, please try again",
+#                 "status_code": 400
+#             }
+#         )
 
-    return jsonify(res)
+#     return jsonify(res)
 
 
 @app.route('/subscribe', methods=['POST'])
