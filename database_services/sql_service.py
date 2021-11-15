@@ -1,7 +1,7 @@
 # import pymysql
 # import json
 # import logging
-from flask import g
+# from flask import g
 import sqlite3
 import os
 
@@ -9,6 +9,7 @@ file_path = os.path.realpath(__file__)
 file_path = "/".join(file_path.split("/")[0: -2])
 
 DATABASE = file_path + '/db/LYPZ.db'
+
 
 class SqliteService:
 
@@ -21,7 +22,6 @@ class SqliteService:
             print(e)
 
         return conn
-
 
     @classmethod
     def run_sql(self, sql_statement, args, fetch=False):
@@ -38,9 +38,6 @@ class SqliteService:
             raise e
         finally:
             connection.close()
-
-
-
 
     @classmethod
     def get_where_clause_args(self, template):
@@ -63,15 +60,11 @@ class SqliteService:
 
     @classmethod
     def select(self, table_name, template={}):
-
-
         wc, args = self.get_where_clause_args(template)
 
         query = "SELECT * FROM " + table_name + " " + wc
 
         return self.run_sql(query, args, True)
-
-
 
     @classmethod
     def insert(self, table_name, insert_data):
@@ -89,7 +82,7 @@ class SqliteService:
         vals_clause = "values (" + ",".join(vals) + ")"
 
         query = "insert into " + table_name + " " + cols_clause + \
-                   " " + vals_clause
+                " " + vals_clause
 
         print(query)
         print(args)
@@ -131,7 +124,7 @@ class SqliteService:
         res = self.run_sql(query, args)
 
         return res
-    
+
     @classmethod
     def find_in_condition(self, table_name, select_vars, in_variable, in_values):
 
@@ -142,9 +135,10 @@ class SqliteService:
             in_values[i] = '"' + in_values[i] + '"'
 
         in_values_clause = ",".join(in_values)
-        query = "SELECT " + select_clause + " FROM " + db_schema + "." + table_name + " WHERE " + \
-              in_variable + " in (" + in_values_clause + ")"
-        
+        query = "SELECT " + select_clause + " FROM " + \
+            db_schema + "." + table_name + " WHERE " + \
+            in_variable + " in (" + in_values_clause + ")"
+
         res = self.run_sql(query)
 
-        return res 
+        return res
