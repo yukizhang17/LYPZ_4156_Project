@@ -11,6 +11,7 @@ from selenium.webdriver.chrome.options import Options
 
 options = Options()
 options.add_argument('--headless')
+options.add_argument("window-size=1400,900")
 driver = webdriver.Chrome(options=options)
 
 #driver = webdriver.PhantomJS(executable_path='/usr/local/lib/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs') # or add to your PATH
