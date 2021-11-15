@@ -6,10 +6,13 @@ currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
-from application_services.subscribe import get_subscribe_input
-from application_services.subscribe import subscribe_product, generate_website
-from application_services.subscribe import unsubscribe_product
-from application_services.subscribe import get_unsubscribe_input
+try:
+    from application_services.subscribe import get_subscribe_input, \
+      subscribe_product, generate_website, unsubscribe_product,\
+      get_unsubscribe_input
+except Exception:
+    raise
+
 
 class Test_Testsubscribe(unittest.TestCase):
 

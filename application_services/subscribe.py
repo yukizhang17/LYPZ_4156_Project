@@ -89,7 +89,7 @@ def insert_by_keyword(uid, keyword, expected_price):
     val = (keyword,)
     cursor.execute(sql, val)
     record = cursor.fetchall()
-    print("record", record)
+    # print("record", record)
 
     if not record:  # never been subscribed before
         return insert_frist_time(keyword, uid, expected_price, "keyword", None)
@@ -105,7 +105,7 @@ def insert_by_keyword(uid, keyword, expected_price):
         cursor.execute(sql, val)
 
         sub_record = cursor.fetchall()
-        print("record", sub_record)
+        # print("record", sub_record)
 
         if not sub_record:  # no subscribe this keyword before
             SqliteService.insert("user_subcription_keyword", {
@@ -153,7 +153,7 @@ def insert_by_productID(uid, productID, website, expected_price):
         val = (sid, uid)
         cursor.execute(sql, val)
         sub_record = cursor.fetchall()
-        print("record", sub_record)
+        # print("record", sub_record)
 
         if not sub_record:  # user never subscribe this product before
             SqliteService.insert("user_subcription_product_id", {
@@ -222,8 +222,6 @@ def delete_by_keyword(uid, keyword):
     cursor.execute(sql, val)
     record = cursor.fetchall()
 
-    print("record", record)
-
     if not record:  # never been subscribed before
         return (200, "No record, check keyword, try again.")
 
@@ -238,7 +236,7 @@ def delete_by_keyword(uid, keyword):
         cursor.execute(sql, val)
 
         sub_record = cursor.fetchall()
-        print("sub_record", sub_record)
+        # print("sub_record", sub_record)
 
         if not sub_record:  # user never subscribe this keyword before
             return (400, "User never subscribe this keyword!")
@@ -262,7 +260,7 @@ def delete_record(sid, uid, type):
     SqliteService.delete(user_sub_table, {"sid": sid, "uid": uid})
 
     other_sub_record = SqliteService.select(user_sub_table, {"sid": sid})
-    print("other_sub_record", other_sub_record)
+    # print("other_sub_record", other_sub_record)
 
     if not other_sub_record:  # no other user subscribe, delete
         SqliteService.delete(sub_table, {"sid": sid})
@@ -282,7 +280,7 @@ def delete_by_productID(uid, productID, website):
     cursor.execute(sql, val)
     record = cursor.fetchall()
 
-    print("record", record)
+    # print("record", record)
 
     if not record:  # never been subscribed before
         return (400, "No record, check product_ID and platform, try again.")
@@ -298,7 +296,7 @@ def delete_by_productID(uid, productID, website):
         cursor.execute(sql, val)
 
         sub_record = cursor.fetchall()
-        print("record", sub_record)
+        # print("record", sub_record)
 
         if not sub_record:  # user never subscribe this product before
             return (400, "User never subscribe this product!")
@@ -330,12 +328,12 @@ def generate_sid():
         'SELECT COUNT(sid) FROM subscription_keyword WHERE sid = "'
         + sid + '";')
     record1 = cursor.fetchall()
-    print("record1", record1)
+    # print("record1", record1)
     cursor.execute(
         'SELECT COUNT(sid) FROM subscription_product_id WHERE sid = " '
         + sid + '";')
     record2 = cursor.fetchall()
-    print("record2", record2)
+    # print("record2", record2)
     if record1[0][0] != 0 or record2[0][0] != 0:
         generate_sid()
 
