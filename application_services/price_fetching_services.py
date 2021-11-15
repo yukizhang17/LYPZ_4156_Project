@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import os
 
-CHROME_DRIVER_PATH = '~/.chromedriver'
+CHROME_DRIVER_PATH = '/app/.chromedriver'
 os.chmod(CHROME_DRIVER_PATH, 0o777)
 for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
 	for dir in [os.path.join(root,d) for d in dirs]:
