@@ -74,7 +74,7 @@ def insert_by_keyword(uid, keyword, expected_price):
     if not keyword:
         return (400, "missing keyword")
 
-    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
 
     sql = """ SELECT sid, keyword
@@ -196,7 +196,7 @@ def unsubscribe_product(uid, product, type, platform):
     return respond
 
 def delete_by_keyword(uid, keyword):
-    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
 
     sql = """ SELECT sid, keyword
@@ -231,7 +231,7 @@ def delete_by_keyword(uid, keyword):
             return delete_record(sid, uid, "keyword")
 
 def delete_record(sid, uid, type):
-    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
 
     if type == "keyword":
@@ -254,7 +254,7 @@ def delete_record(sid, uid, type):
     return (200, "Unsubscribe successfully!")
 
 def delete_by_productID(uid, productID, website):
-    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
 
     sql = """ SELECT sid, website
@@ -304,7 +304,7 @@ def generate_website(platform, product):
 def generate_sid():
     sid = str(uuid4())
 
-    sqliteConnection = sqlite3.connect('db/LYPZ.db')
+    sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
 
     cursor.execute('SELECT COUNT(sid) FROM subscription_keyword WHERE sid = "'+ sid +'";')

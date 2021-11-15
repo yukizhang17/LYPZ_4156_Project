@@ -1,6 +1,6 @@
-import pymysql
-import json
-import logging
+# import pymysql
+# import json
+# import logging
 from flask import g
 import sqlite3
 import os
