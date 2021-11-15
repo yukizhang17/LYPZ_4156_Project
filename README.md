@@ -250,7 +250,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    
    ## 
 
-   ### 8. Subscribe with productID
+   ### 8. Subscribe with product ID
    
    **HTTP Request:**
    
@@ -277,12 +277,33 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
 
    ```
 
- 
-   
-   
-   
+   ## 
 
+   ### 9. Compare prices for a keyword or product ID
+   
+   **HTTP Request:**
+   
+   ```
+   POST http://localhost:5000/compare
+     
+   Content-Type: application/x-www-form-urlencoded
 
-  
-     
-     
+   Input: access_token=YOUR_TOKEN&keyword=KEYWORD&item_id=PRODUCT_ID&platform=PRODUCT_PLATFORM
+
+  Restriction:
+      > Fields access_token is required.
+      > Field keyword or fields item_id and platform are required.
+      > PRODUCT_PLATFORM must be either "amazon" or "bestbuy".
+   ```
+   
+   **Response Sample:**
+   ```
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+      "amazon_price": 418.38,
+      "bestbuy_price": 195.55,
+      "timestamp": "2021-11-15 08:47:09.543926"
+    }
+
+   ```
