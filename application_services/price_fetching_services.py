@@ -4,15 +4,15 @@ import numpy as np
 import traceback
 from bs4 import BeautifulSoup
 from datetime import datetime
-# import os
+import os
 
-# CHROME_DRIVER_PATH = '/app/.chromedriver'
-# os.chmod(CHROME_DRIVER_PATH, 0o777)
-# for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
-# 	for dir in [os.path.join(root,d) for d in dirs]:
-# 		os.chmod(dir, 0o777)
-# 	for file in [os.path.join(root, f) for f in files]:
-# 		os.chmod(file, 0o777)
+CHROME_DRIVER_PATH = '/app/.chromedriver'
+os.chmod(CHROME_DRIVER_PATH, 0o777)
+for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
+	for dir in [os.path.join(root,d) for d in dirs]:
+		os.chmod(dir, 0o777)
+	for file in [os.path.join(root, f) for f in files]:
+		os.chmod(file, 0o777)
 
 # use selenium to fetch web page when it is fully loaded
 import undetected_chromedriver as uc
