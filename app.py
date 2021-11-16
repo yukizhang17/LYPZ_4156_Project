@@ -65,7 +65,7 @@ def generate_apikey():
 
     if request.method == "POST":
         # If already signup, return error
-        response = signup_request(email, password)
+        response = signup_request(email, password).json()
         if "statusCode" in response and response["statusCode"] == 400:
             return jsonify(response)
 
