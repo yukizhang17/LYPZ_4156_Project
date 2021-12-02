@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
-from application_services.user_services import validate_token, login_request, \
-    signup_request, validate_all_api_form_fields, get_user_id, valid_email
+from application_services.user_services import CLIENT_ID, \
+    CLIENT_SECRET, validate_token, login_request, signup_request, \
+    validate_all_api_form_fields, get_user_id, valid_email
 # from application_services.price_fetching_services import compare_prices, \
 #     validate_optional_api_form_fields
 from application_services.subscribe import get_subscribe_input, \
@@ -15,9 +16,6 @@ print(file_path)
 app = Flask(__name__)
 
 
-CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
-CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hra' + \
-                'HNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
 
