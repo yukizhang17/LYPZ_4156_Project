@@ -182,6 +182,98 @@ def userinfo():
 
 #     return jsonify(res)
 
+@app.route('/query-select', methods=['GET'])
+def query_select():
+    form = request.form
+    if not validate_all_api_form_fields(
+        ["access_token", "table"], form):
+        return jsonify({
+            "reason": "missing required fields",
+            "status_code": 400})  
+    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+        return jsonify({
+            "reason": "access denied",
+            "status_code": 400})
+    where = {}
+    for element in form:
+        if element != "access_token" and element != "table":
+            where[element] = form[element]
+
+    rst = SqliteService.select(form["table"], where)
+
+    return jsonify(rst)
+
+@app.route('/query-insert', methods=['POST'])
+def query_insert():
+    form = request.form
+    if not validate_all_api_form_fields(
+        ["access_token", "table"], form):
+        return jsonify({
+            "reason": "missing required fields",
+            "status_code": 400})  
+    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+        return jsonify({
+            "reason": "access denied",
+            "status_code": 400})
+    where = {}
+    for element in form:
+        if element != "access_token" and element != "table":
+            where[element] = form[element]
+
+    rst = SqliteService.insert(form["table"], where)
+
+    return jsonify(rst)
+
+@app.route('/query-delete', methods=['POST'])
+def query_delete():
+    form = request.form
+    if not validate_all_api_form_fields(
+        ["access_token", "table"], form):
+        return jsonify({
+            "reason": "missing required fields",
+            "status_code": 400})  
+    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+        return jsonify({
+            "reason": "access denied",
+            "status_code": 400})
+    where = {}
+    for element in form:
+        if element != "access_token" and element != "table":
+            where[element] = form[element]
+
+    rst = SqliteService.delete(form["table"], where)
+
+    return jsonify(rst)
+
+@app.route('/query-update', methods=['POST'])
+def query_update():
+    form = request.form
+    if not validate_all_api_form_fields(
+        ["access_token", "table"], form):
+        return jsonify({
+            "reason": "missing required fields",
+            "status_code": 400})  
+    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+        return jsonify({
+            "reason": "access denied",
+            "status_code": 400})
+    update = {}
+    where = {}
+    for element in form:
+        if element != "access_token" and element != "table":
+            if "update" in element:
+                update[element.split("_")[1]] = form[element]
+            if "where" in element:
+                where[element.split("_")[1]] = form[element]
+
+    rst = SqliteService.update(form["table"], update, where)
+
+    return jsonify(rst)
+
+
+
+
+
 
 @app.route('/subscribe', methods=['POST'])
 def subscribe():
