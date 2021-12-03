@@ -270,6 +270,32 @@ def query_update():
 
     return jsonify(rst)
 
+@app.route('update-email-preference', methods=['POST'])
+def update_email_preference():
+    form = request.form
+    if not validate_all_api_form_fields(
+            ["access_token", "notification_interval"], form):
+        return jsonify({
+            "reason": "missing required fields",
+            "status_code": 400})
+
+    validation_res = validate_token(form["access_token"])
+    if 'email' not in validation_res:
+        return jsonify(validation_res)
+    else:
+        uid = get_user_id(form["access_token"])
+
+    if form["notification_interval"] not in ["off", "monthly", "weekly", "daily"]:
+        return jsonify({
+            "reason": "invalid interval",
+            "status_code": 400})
+
+
+    rst = SqliteService.update("user", {"notification_interval":form["notification_interval"]}, {"uid":uid})
+
+    return jsonify(rst)
+
+
 
 
 
