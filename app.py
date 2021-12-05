@@ -262,15 +262,15 @@ def query_update():
     for element in form:
         if element != "access_token" and element != "table":
             if "update" in element:
-                update[element.split("_")[1]] = form[element]
+                update["_".join(element.split("_")[1:])] = form[element]
             if "where" in element:
-                where[element.split("_")[1]] = form[element]
+                where["_".join(element.split("_")[1:])] = form[element]
 
     rst = SqliteService.update(form["table"], update, where)
 
     return jsonify(rst)
 
-@app.route('update-email-preference', methods=['POST'])
+@app.route('/update-email-preference', methods=['POST'])
 def update_email_preference():
     form = request.form
     if not validate_all_api_form_fields(

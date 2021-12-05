@@ -3,48 +3,21 @@ import json
 import numpy as np
 import traceback
 from bs4 import BeautifulSoup
-from datetime import datetime
-
-# import os
-
-# CHROME_DRIVER_PATH = '/app/.chromedriver'
-# os.chmod(CHROME_DRIVER_PATH, 0o777)
-# for root, dirs, files in os.walk(CHROME_DRIVER_PATH, topdown=True):
-#     for dir in [os.path.join(root,d) for d in dirs]:
-#         os.chmod(dir, 0o777)
-#     for file in [os.path.join(root, f) for f in files]:
-#         os.chmod(file, 0o777)
-
-# import undetected_chromedriver as uc
-
-# CHROME_DRIVER_EXE_PATH = '/app/.chromedriver/bin/chromedriver'
-
-# options = uc.ChromeOptions(executable_path=CHROME_DRIVER_EXE_PATH)
-# options.add_argument('--headless')
-# options.add_argument("--disable-dev-shm-usage")
-# options.add_argument("--no-sandbox")
-# options.add_argument('--disable-gpu')
-# driver = uc.Chrome(options=options, executable_path=CHROME_DRIVER_EXE_PATH)
-
-import sys
+from datetime import datetime, date
 from selenium import webdriver
 
-# PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-# driver = webdriver.PhantomJS(PANTHOMJS_PATH)
-sys.path.append(
-    '/home/ec2-user/.nvm/versions/node/v17.1.0/' +
-    'lib/node_modules/phantomjs-prebuilt/bin'
-)
-driver = webdriver.PhantomJS()
 
-# from selenium import webdriver
-# from selenium.webdriver.chrome.service import Service
-# from webdriver_manager.chrome import ChromeDriverManager
+# local host config
+PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
+driver = webdriver.PhantomJS(PANTHOMJS_PATH)
 
-# options = webdriver.ChromeOptions()
-# options.add_argument('--headless')
-# chrome_service = Service(ChromeDriverManager().install())
-# driver = webdriver.Chrome(service=chrome_service, options=options)
+# aws lambda config
+# import os
+# PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+# driver = webdriver.PhantomJS(
+#     executable_path=PANTHOMJS_PATH, 
+#     service_log_path=os.path.devnull
+# )
 
 
 AMAZON_DOMAIN = "https://www.amazon.com"
@@ -378,6 +351,109 @@ def compare_prices(keyword, item_id=None, platform=None):
         return None
 
 
+# log product prices
+def log_product_prices():
+
+    DB_SELECT_URL = 'http://127.0.0.1:5000/query-select'
+    DB_UPDATE_URL = 'http://127.0.0.1:5000/query-update'
+
+    form = {
+        'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
+        'table': 'subscription_product_id'
+    }
+    
+    # get subscribed product ids from db
+    res = requests.get(DB_SELECT_URL, data=form)
+    subscribed_items = res.json()
+
+    # for each subsribed item, fetch price
+    for item_record in subscribed_items:
+        sid = item_record[0]
+        item_id = item_record[1]
+        url = item_record[2]
+        price_history = item_record[3]
+
+        # check if the item is from amazon or bestbuy and fetch price
+        price = None
+        if 'amazon' in url:
+            item_res = fetch_item_amazon(item_id)
+            price = get_item_price_amazon(item_res)
+        elif 'bestbuy' in url:
+            item_res = fetch_item_bestbuy(item_id)
+            price = get_item_price_bestbuy(item_res)
+
+        # if price is None, log nothing
+        if price is None:
+            continue
+        
+        # format today's date
+        today = str(date.today()).replace('-', '/')
+
+        # create price record
+        record = today + '-' + str(price)
+
+        if price_history is None or price_history == '':
+            price_history = record
+
+        price_history += ', ' + record
+
+        form['where_sid'] = sid
+        form['update_price_history'] = price_history
+
+        # log price history
+        res = requests.post(DB_UPDATE_URL, data=form)
+
+
+# log keyword prices
+def log_keyword_prices():
+    
+    DB_SELECT_URL = 'http://127.0.0.1:5000/query-select'
+    DB_UPDATE_URL = 'http://127.0.0.1:5000/query-update'
+
+    form = {
+        'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
+        'table': 'subscription_keyword'
+    }
+    
+    # get subscribed product ids from db
+    res = requests.get(DB_SELECT_URL, data=form)
+    subscribed_keywords = res.json()
+
+    # for each subsribed item, fetch price
+    for keyword_record in subscribed_keywords:
+        sid = keyword_record[0]
+        keyword = keyword_record[1]
+        price_history = keyword_record[2]
+
+        # check if the item is from amazon or bestbuy and fetch price
+        amazon_keyword_res = fetch_keyword_amazon(keyword)
+        amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
+        bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
+        bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
+
+        # format today's date
+        today = str(date.today()).replace('-', '/')
+
+        # create price records
+        amazon_record = None
+        if amazon_price is not None:
+            amazon_record = 'amazon' + '-' + today + '-' + str(amazon_price)
+
+        bestbuy_record = None
+        if bestbuy_price is not None:
+            bestbuy_record = 'bestbuy' + '-' + today + '-' + str(bestbuy_price)
+
+        if price_history is None or price_history == '':
+            price_history = amazon_record + ', ' + bestbuy_record
+
+        price_history += ', ' + amazon_record + ', ' + bestbuy_record
+
+        form['where_sid'] = sid
+        form['update_price_history'] = price_history
+
+        # log price history
+        res = requests.post(DB_UPDATE_URL, data=form)
+
 if __name__ == '__main__':
     # Nintendo Switch (Grey)
     sample_amazon_item_id = "B09KMXCPKP"
@@ -390,9 +466,13 @@ if __name__ == '__main__':
     # item_res_amazon = fetch_item_amazon(sample_amazon_item_id)
     # keyword_res_amazon = fetch_keyword_amazon(sample_keyword)
 
-    # get_item_price_amazon(sample_amazon_item_id)
-    # get_item_name_amazon(item_res_amazon)
-    # get_keyword_avg_price_amazon(keyword_res_amazon)
+    # amazon_item_price = get_item_price_amazon(sample_amazon_item_id)
+    # amazon_item_name = get_item_name_amazon(item_res_amazon)
+    # amazon_keyword_price = get_keyword_avg_price_amazon(keyword_res_amazon)
+
+    # print(amazon_item_price)
+    # print(amazon_item_name)
+    # print(amazon_keyword_price)
 
     # bestbuy
     # item_res_bestbuy = fetch_item_bestbuy(sample_best_buy_item_id)
@@ -413,3 +493,6 @@ if __name__ == '__main__':
     # compare price item bestbuy
     # res = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
     # print(res)
+
+    log_product_prices()
+    log_keyword_prices()

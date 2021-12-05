@@ -6,9 +6,10 @@ import sqlite3
 import os
 
 file_path = os.path.realpath(__file__)
-file_path = "/".join(file_path.split("/")[0: -2])
+app_dir = os.path.dirname(os.path.dirname(file_path))
+db_path = os.path.join(app_dir, 'db', 'LYPZ.db')
 
-DATABASE = file_path + '/db/LYPZ.db'
+DATABASE = db_path
 
 
 class SqliteService:
