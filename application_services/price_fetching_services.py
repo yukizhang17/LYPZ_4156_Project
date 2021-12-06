@@ -384,7 +384,7 @@ def log_product_prices():
 
         # if price is None, log nothing
         if price is None:
-            continue
+            price = 'None'
         
         # format today's date
         today = str(date.today()).replace('-', '/')
@@ -435,13 +435,14 @@ def log_keyword_prices():
         today = str(date.today()).replace('-', '/')
 
         # create price records
-        amazon_record = None
-        if amazon_price is not None:
-            amazon_record = 'amazon' + '-' + today + '-' + str(amazon_price)
+        if amazon_price is None:
+            amazon_price = 'None'
+        amazon_record = 'amazon' + '-' + today + '-' + str(amazon_price)
+        
 
-        bestbuy_record = None
-        if bestbuy_price is not None:
-            bestbuy_record = 'bestbuy' + '-' + today + '-' + str(bestbuy_price)
+        if bestbuy_price is None:
+            bestbuy_price = 'None'
+        bestbuy_record = 'bestbuy' + '-' + today + '-' + str(bestbuy_price)
 
         if price_history is None or price_history == '':
             price_history = amazon_record + ', ' + bestbuy_record
