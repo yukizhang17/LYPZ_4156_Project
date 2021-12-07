@@ -182,14 +182,16 @@ def userinfo():
 
 #     return jsonify(res)
 
-@app.route('/query-select', methods=['GET'])
+
+# 
+@app.route('/query-select', methods=['GET', 'POST'])
 def query_select():
     form = request.form
     if not validate_all_api_form_fields(
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
@@ -202,6 +204,7 @@ def query_select():
     rst = SqliteService.select(form["table"], where)
 
     return jsonify(rst)
+
 
 @app.route('/query-insert', methods=['POST'])
 def query_insert():
@@ -224,6 +227,7 @@ def query_insert():
 
     return jsonify(rst)
 
+
 @app.route('/query-delete', methods=['POST'])
 def query_delete():
     form = request.form
@@ -244,6 +248,7 @@ def query_delete():
     rst = SqliteService.delete(form["table"], where)
 
     return jsonify(rst)
+
 
 @app.route('/query-update', methods=['POST'])
 def query_update():
@@ -270,6 +275,7 @@ def query_update():
 
     return jsonify(rst)
 
+
 @app.route('/update-email-preference', methods=['POST'])
 def update_email_preference():
     form = request.form
@@ -290,15 +296,14 @@ def update_email_preference():
             "reason": "invalid interval",
             "status_code": 400})
 
-
-    rst = SqliteService.update("user", {"notification_interval":form["notification_interval"]}, {"uid":uid})
+    rst = SqliteService.update
+    (
+        "user",
+        {"notification_interval":form["notification_interval"]},
+        {"uid":uid}
+    )
 
     return jsonify(rst)
-
-
-
-
-
 
 
 @app.route('/subscribe', methods=['POST'])
