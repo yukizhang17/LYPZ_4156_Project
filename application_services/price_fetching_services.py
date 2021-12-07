@@ -8,22 +8,33 @@ from selenium import webdriver
 
 
 # local host config
-PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-driver = webdriver.PhantomJS(PANTHOMJS_PATH)
+# PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
+# driver = webdriver.PhantomJS(PANTHOMJS_PATH)
 
 # aws lambda config
-# import os
-# PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
-# driver = webdriver.PhantomJS(
-#     executable_path=PANTHOMJS_PATH, 
-#     service_log_path=os.path.devnull
-# )
+import os
+PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+driver = webdriver.PhantomJS(
+    executable_path=PANTHOMJS_PATH, 
+    service_log_path=os.path.devnull
+)
 
 
 AMAZON_DOMAIN = "https://www.amazon.com"
 BESTBUY_DOMAIN = "https://www.bestbuy.com/site"
 BESTBUY_API_BASE = "https://api.bestbuy.com/v1/products"
 BESTBUY_API_KEY = "nU3Uo9RMMpqKmrhpm2if81bl"
+
+
+# local host config
+# DB_URL = "http://127.0.0.1:5000/"
+
+# aws lambda config
+DB_URL = "https://whispering-peak-99211.herokuapp.com/"
+
+
+DB_SELECT_URL = DB_URL + 'query-select'
+DB_UPDATE_URL = DB_URL + 'query-update'
 
 
 # check if at least one list of fields are included in the api form
@@ -107,14 +118,9 @@ def fetch_keyword_bestbuy(keyword):
     try:
         keyword = '+'.join(keyword.split(' '))
         url = BESTBUY_DOMAIN + "/searchpage.jsp?st={}".format(keyword)
-        headers = {
-            "User-Agent": "PostmanRuntime/7.28.4",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept": "*/*",
-            "Connection": "close",
-        }
-        # print(url)
-        response = requests.get(url, headers=headers)
+        print(url)
+        driver.get(url)
+        response = driver.page_source
         return response
     except Exception as e:
         print(e)
@@ -134,7 +140,7 @@ def get_item_price_amazon(response):
 
         data = json.loads(info['data-components'])
         price_string = data['1']['price']['displayString']
-        price = float(price_string[1:])
+        price = float(price_string[1:].replace(',', ''))
         return price
     except Exception as e:
         print(e)
@@ -190,7 +196,7 @@ def get_keyword_avg_price_amazon(response, keyword=None):
             inner_price_span = outer_price_span.find(
                 'span', class_='a-offscreen'
             )
-            price = float(inner_price_span.text[1:])
+            price = float(inner_price_span.text[1:].replace(',', ''))
             prices.append(price)
 
             # get the top 20 products if there are more than 20
@@ -239,7 +245,7 @@ def get_item_name_bestbuy(response):
 # get average product price from bestbuy keyword search web page
 def get_keyword_avg_price_bestbuy(response, keyword=None):
     try:
-        content = response.content
+        content = response
         soup = BeautifulSoup(content, 'html.parser')
         search_results = soup.select('li.sku-item')
 
@@ -264,7 +270,7 @@ def get_keyword_avg_price_bestbuy(response, keyword=None):
             if price_div is None:
                 continue
             price_span = price_div.find('span')
-            price = float(price_span.text[1:])
+            price = float(price_span.text[1:].replace(',', ''))
             prices.append(price)
 
             # get the top 20 products if there are more than 20
@@ -354,9 +360,6 @@ def compare_prices(keyword, item_id=None, platform=None):
 # log product prices
 def log_product_prices():
 
-    DB_SELECT_URL = 'http://127.0.0.1:5000/query-select'
-    DB_UPDATE_URL = 'http://127.0.0.1:5000/query-update'
-
     form = {
         'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
         'table': 'subscription_product_id'
@@ -366,94 +369,116 @@ def log_product_prices():
     res = requests.get(DB_SELECT_URL, data=form)
     subscribed_items = res.json()
 
+    if subscribed_items is None:
+        return 0
+
+    count = 0
     # for each subsribed item, fetch price
     for item_record in subscribed_items:
-        sid = item_record[0]
-        item_id = item_record[1]
-        url = item_record[2]
-        price_history = item_record[3]
+        try:
+            sid = item_record[0]
+            item_id = item_record[1]
+            url = item_record[2]
+            price_history = item_record[3]
 
-        # check if the item is from amazon or bestbuy and fetch price
-        price = None
-        if 'amazon' in url:
-            item_res = fetch_item_amazon(item_id)
-            price = get_item_price_amazon(item_res)
-        elif 'bestbuy' in url:
-            item_res = fetch_item_bestbuy(item_id)
-            price = get_item_price_bestbuy(item_res)
+            # check if the item is from amazon or bestbuy and fetch price
+            price = None
+            if 'amazon' in url:
+                item_res = fetch_item_amazon(item_id)
+                price = get_item_price_amazon(item_res)
+            elif 'bestbuy' in url:
+                item_res = fetch_item_bestbuy(item_id)
+                price = get_item_price_bestbuy(item_res)
 
-        # if price is None, log nothing
-        if price is None:
-            price = 'None'
-        
-        # format today's date
-        today = str(date.today()).replace('-', '/')
+            # if price is None, log nothing
+            if price is None:
+                price = 'None'
+            
+            # format today's date
+            today = str(date.today()).replace('-', '/')
 
-        # create price record
-        record = today + '-' + str(price)
+            # create price record
+            record = today + '-' + str(price)
 
-        if price_history is None or price_history == '':
-            price_history = record
+            if price_history is None or price_history == '':
+                price_history = record
 
-        price_history += ',' + record
+            price_history += ',' + record
 
-        form['where_sid'] = sid
-        form['update_price_history'] = price_history
+            form['where_sid'] = sid
+            form['update_price_history'] = price_history
 
-        # log price history
-        res = requests.post(DB_UPDATE_URL, data=form)
-
+            # log price history
+            res = requests.post(DB_UPDATE_URL, data=form)
+            count += 1
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            return count
+    
+    return count
 
 # log keyword prices
 def log_keyword_prices():
     
-    DB_SELECT_URL = 'http://127.0.0.1:5000/query-select'
-    DB_UPDATE_URL = 'http://127.0.0.1:5000/query-update'
-
     form = {
         'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
         'table': 'subscription_keyword'
     }
     
-    # get subscribed product ids from db
+    # get subscribed keywords from db
     res = requests.get(DB_SELECT_URL, data=form)
     subscribed_keywords = res.json()
 
-    # for each subsribed item, fetch price
+    if subscribed_keywords is None:
+        return 0
+
+    count = 0
+    # for each subsribed keyword, fetch price from amazon and bestbuy
     for keyword_record in subscribed_keywords:
-        sid = keyword_record[0]
-        keyword = keyword_record[1]
-        price_history = keyword_record[2]
+        try:
+            sid = keyword_record[0]
+            keyword = keyword_record[1]
+            price_history = keyword_record[2]
 
-        # check if the item is from amazon or bestbuy and fetch price
-        amazon_keyword_res = fetch_keyword_amazon(keyword)
-        amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
-        bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
-        bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
+            # fetch keyword average price from amazon and bestbuy
+            amazon_keyword_res = fetch_keyword_amazon(keyword)
+            amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
+            print("amazon_price")
+            print(amazon_price)
+            bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
+            bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
+            print("bestbuy_price")
+            print(bestbuy_price)
+            # format today's date
+            today = str(date.today()).replace('-', '/')
 
-        # format today's date
-        today = str(date.today()).replace('-', '/')
+            # create price records
+            if amazon_price is None:
+                amazon_price = 'None'
+            amazon_record = 'amazon' + '-' + today + '-' + str(amazon_price)
 
-        # create price records
-        if amazon_price is None:
-            amazon_price = 'None'
-        amazon_record = 'amazon' + '-' + today + '-' + str(amazon_price)
-        
+            if bestbuy_price is None:
+                bestbuy_price = 'None'
+            bestbuy_record = 'bestbuy' + '-' + today + '-' + str(bestbuy_price)
 
-        if bestbuy_price is None:
-            bestbuy_price = 'None'
-        bestbuy_record = 'bestbuy' + '-' + today + '-' + str(bestbuy_price)
+            if price_history is None or price_history == '':
+                price_history = amazon_record + ',' + bestbuy_record
 
-        if price_history is None or price_history == '':
-            price_history = amazon_record + ',' + bestbuy_record
+            price_history += ',' + amazon_record + ',' + bestbuy_record
 
-        price_history += ',' + amazon_record + ',' + bestbuy_record
+            form['where_sid'] = sid
+            form['update_price_history'] = price_history
 
-        form['where_sid'] = sid
-        form['update_price_history'] = price_history
-
-        # log price history
-        res = requests.post(DB_UPDATE_URL, data=form)
+            # log price history
+            res = requests.post(DB_UPDATE_URL, data=form)
+            count += 1
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            return count
+    
+    return count
 
 if __name__ == '__main__':
     # Nintendo Switch (Grey)
@@ -461,7 +486,7 @@ if __name__ == '__main__':
     # Nintendo - Switch - Animal Crossing: New Horizons Edition 32GB Console
     # - Multi
     sample_best_buy_item_id = "6401728"
-    sample_keyword = "nintendo switch"
+    sample_keyword = "yeezy"
 
     # amazon
     # item_res_amazon = fetch_item_amazon(sample_amazon_item_id)
@@ -481,7 +506,7 @@ if __name__ == '__main__':
 
     # get_item_price_bestbuy(item_res_bestbuy)
     # get_item_name_bestbuy(item_res_bestbuy)
-    # get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
+    # avg_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
 
     # compare price keyword
     # res = compare_prices(sample_keyword)
@@ -495,5 +520,5 @@ if __name__ == '__main__':
     # res = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
     # print(res)
 
-    log_product_prices()
-    log_keyword_prices()
+    # log_product_prices()
+    # log_keyword_prices()
