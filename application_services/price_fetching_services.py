@@ -395,7 +395,7 @@ def log_product_prices():
         if price_history is None or price_history == '':
             price_history = record
 
-        price_history += ', ' + record
+        price_history += ',' + record
 
         form['where_sid'] = sid
         form['update_price_history'] = price_history
@@ -445,9 +445,9 @@ def log_keyword_prices():
         bestbuy_record = 'bestbuy' + '-' + today + '-' + str(bestbuy_price)
 
         if price_history is None or price_history == '':
-            price_history = amazon_record + ', ' + bestbuy_record
+            price_history = amazon_record + ',' + bestbuy_record
 
-        price_history += ', ' + amazon_record + ', ' + bestbuy_record
+        price_history += ',' + amazon_record + ',' + bestbuy_record
 
         form['where_sid'] = sid
         form['update_price_history'] = price_history
