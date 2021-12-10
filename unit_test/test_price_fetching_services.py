@@ -1,4 +1,4 @@
-"""
+
 import unittest
 import os
 import sys
@@ -7,7 +7,7 @@ import numpy as np
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-
+"""
 try:
     from application_services.price_fetching_services import \
         validate_optional_api_form_fields, reject_outliers, \

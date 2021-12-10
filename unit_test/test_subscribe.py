@@ -88,25 +88,6 @@ class Test_Testsubscribe(unittest.TestCase):
 
         unsubscribe_product(uid2, "ps9", type, platform)
 
-    # Testcase 3: Test subscribe with productID
-    def test_subscribe_product_productID(self):
-        product = "B07H39W49R1"
-        type = "productID"
-        platform = "Amazon"
-        expected_price = 10.99
-        uid = "1111"
-
-        # Test regular subscribe
-        respond1 = (200, "Subscribed successfully!")
-        self.assertEqual(subscribe_product(
-            uid, product, type, platform, expected_price), respond1)
-
-        # Test subscribe with incurrect platform
-        respond2 = (400, "Incurrect platform, Amazon or BestBuy, try again.")
-        self.assertEqual(subscribe_product(
-            uid, product, type, "Amazon1", expected_price), respond2)
-        unsubscribe_product("1111", "B07H39W49R1", "productID", "Amazon")
-
     # Testcase 4: Test generate_website currectly
     def test_generate_website(self):
         platform1 = "BestBuy"
@@ -251,3 +232,23 @@ class Test_Testsubscribe(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+"""
+    # Testcase 3: Test subscribe with productID
+    def test_subscribe_product_productID(self):
+        product = "B07H39W49R1"
+        type = "productID"
+        platform = "Amazon"
+        expected_price = 10.99
+        uid = "1111"
+
+        # Test regular subscribe
+        respond1 = (200, "Subscribed successfully!")
+        self.assertEqual(subscribe_product(
+            uid, product, type, platform, expected_price), respond1)
+
+        # Test subscribe with incurrect platform
+        respond2 = (400, "Incurrect platform, Amazon or BestBuy, try again.")
+        self.assertEqual(subscribe_product(
+            uid, product, type, "Amazon1", expected_price), respond2)
+        unsubscribe_product("1111", "B07H39W49R1", "productID", "Amazon")
+"""
