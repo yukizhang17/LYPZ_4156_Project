@@ -1,6 +1,4 @@
 
-      
-
 matrix:
   include:
     - language: node_js
@@ -29,8 +27,4 @@ matrix:
         - cd unit_test
         - coverage run -m unittest discover
         - coverage html
-        - cd ..
-        - git add .
-        - git commit -m "update coverage"
-        - git push origin main
 
