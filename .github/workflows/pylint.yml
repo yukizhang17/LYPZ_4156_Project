@@ -20,7 +20,7 @@ jobs:
         pip install -r requirements.txt
     - name: analysis converage
       run: |
-        - ls
-        - cd unit_test
-        - coverage run -m unittest discover
-        - coverage html
+        pylint "ls"
+        pylint "cd unit_test"
+        pylint "coverage run -m unittest discover"
+        pylint "coverage html"
