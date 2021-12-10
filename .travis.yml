@@ -3,11 +3,11 @@ xon:
     branches:
       - main
     path-ignore:
-      - '**/htmlcov/*'
+      - '**/htmlcov/**'
       - '.coverage'
   pull_request:
     path-ignore:
-      - '**/htmlcov/*'
+      - '**/htmlcov/**'
       - '.coverage'
   
       
