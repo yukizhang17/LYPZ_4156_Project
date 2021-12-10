@@ -49,7 +49,7 @@ class Test_Testsubscribe(unittest.TestCase):
     # Testcase 2: Test subscribe with keyword
     def test_subscribe_product_keyword(self):
         # Test regular subscribe
-        product = "ps5"
+        product = "ps9"
         type = "keyword"
         expected_price = 10.99
         platform = None
@@ -86,9 +86,11 @@ class Test_Testsubscribe(unittest.TestCase):
             subscribe_product
             (uid, product, type, platform, expected_price), respond5)
 
+        unsubscribe_product(uid2, "ps9", type, platform)
+
     # Testcase 3: Test subscribe with productID
     def test_subscribe_product_productID(self):
-        product = "B07H39W49R"
+        product = "B07H39W49R1"
         type = "productID"
         platform = "Amazon"
         expected_price = 10.99
@@ -103,6 +105,7 @@ class Test_Testsubscribe(unittest.TestCase):
         respond2 = (400, "Incurrect platform, Amazon or BestBuy, try again.")
         self.assertEqual(subscribe_product(
             uid, product, type, "Amazon1", expected_price), respond2)
+        unsubscribe_product("1111", "B07H39W49R1", "productID", "Amazon")
 
     # Testcase 4: Test generate_website currectly
     def test_generate_website(self):
@@ -124,9 +127,9 @@ class Test_Testsubscribe(unittest.TestCase):
     # Testcase 5: Test get unsubscribe input with keyword, product id
     def test_get_unsubscribe_input(self):
         # Test input with no platform
-        form1 = {"product": "ps5", "type": "keyword"}
+        form1 = {"product": "ps9", "type": "keyword"}
         respond1 = (200, {
-            "product": "ps5", "type": "keyword", "platform": None})
+            "product": "ps9", "type": "keyword", "platform": None})
         self.assertEqual(get_unsubscribe_input(form1), respond1)
 
         # Test input unsubscribe productID with no platform
@@ -136,11 +139,12 @@ class Test_Testsubscribe(unittest.TestCase):
 
         # Test correct input
         form4 = {
-            "product": "B07H39W49R", "type": "productID", "platform": "Amazon"}
+            "product": "B07H39W49R1",
+            "type": "productID", "platform": "Amazon"}
         respond4 = (
             200,
             {
-                "product": "B07H39W49R",
+                "product": "B07H39W49R1",
                 "type": "productID",
                 "platform": "Amazon"
             }
@@ -149,7 +153,7 @@ class Test_Testsubscribe(unittest.TestCase):
 
     # Testcase 6: Test unsubscribe with keyword
     def test_unsubscribe_product_keyword(self):
-        product = "ps5"
+        product = "ps9"
         type = "keyword"
         expected_price = 10.99
         platform = None
@@ -205,7 +209,7 @@ class Test_Testsubscribe(unittest.TestCase):
         self.assertEqual(
             unsubscribe_product(uid, product, type, platform), respond4)
 
-        # Test another user subscribe the same product
+        # Test unsubscirbe
         uid2 = "1111"
         respond5 = (200, "Unsubscribe successfully!")
         self.assertEqual(
@@ -240,6 +244,9 @@ class Test_Testsubscribe(unittest.TestCase):
         self.assertEqual(
             subscribe_product(
                 uid2, product, type, platform, expected_price), respond5)
+
+        unsubscribe_product(uid, product, type, platform)
+        unsubscribe_product(uid2, product, type, platform)
 
 
 if __name__ == '__main__':

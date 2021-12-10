@@ -1,10 +1,9 @@
+
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
 from application_services.user_services import CLIENT_ID, \
     CLIENT_SECRET, validate_token, login_request, signup_request, \
     validate_all_api_form_fields, get_user_id, valid_email
-# from application_services.price_fetching_services import compare_prices, \
-#     validate_optional_api_form_fields
 from application_services.subscribe import get_subscribe_input, \
     subscribe_product, get_unsubscribe_input, unsubscribe_product
 import uuid
