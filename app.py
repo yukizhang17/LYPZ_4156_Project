@@ -1,4 +1,3 @@
-# flask
 
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
