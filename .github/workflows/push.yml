@@ -24,4 +24,4 @@ jobs:
       working-directory: ./unit_test
       run: |
         coverage run -m unittest discover
-        coverge html
+        coverage html
