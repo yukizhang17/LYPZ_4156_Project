@@ -1,14 +1,14 @@
-on:
+xon:
   push:
     branches:
       - main
     path-ignore:
-      - '**/htmlcov/*
-      - .coverage
+      - '**/htmlcov/*'
+      - '.coverage'
   pull_request:
     path-ignore:
-      - '**/htmlcov/*
-      - .coverage
+      - '**/htmlcov/*'
+      - '.coverage'
   
       
 
@@ -40,4 +40,8 @@ matrix:
         - cd unit_test
         - coverage run -m unittest discover
         - coverage html
+        - cd ..
+        - git add .
+        - git commit -m "update coverage"
+        - git push origin main
 
