@@ -1,14 +1,14 @@
-on:
+xon:
   push:
     branches:
       - main
     path-ignore:
-      - '**/htmlcov/*
-      - .coverage
+      - '**/htmlcov/*'
+      - '.coverage'
   pull_request:
     path-ignore:
-      - '**/htmlcov/*
-      - .coverage
+      - '**/htmlcov/*'
+      - '.coverage'
   
       
 
