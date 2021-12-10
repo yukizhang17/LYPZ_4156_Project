@@ -43,5 +43,5 @@ matrix:
         - cd ..
         - git add .
         - git commit -m "update coverage"
-        - git push origins
+        - git push origin main
 
