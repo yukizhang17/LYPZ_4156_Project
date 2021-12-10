@@ -1,4 +1,10 @@
-
+on:
+  push:
+    branches:
+      - main
+    path-ignore:
+      - '**/htmlcov'
+      - .coverage
 
 matrix:
   include:
