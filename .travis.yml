@@ -12,4 +12,4 @@ before_script:
 - node_modules/.bin/newman --version
 
 script:
-- node_modules/.bin/newman run https://api.getpostman.com/collections/18341107-79bbc61e-e7f6-4152-9324-4a5adeb4ca38?apikey=PMAK-61b2c1164bfcca0051634938-5c324410856a5ab2615f8de871a45bd6de --environment https://api.getpostman.com/environments/2824841b-f489-4c15-aff1-dadab7242eb2?apikey=PMAK-61b2c1164bfcca0051634938-5c324410856a5ab2615f8de871a45bd6de
+- node_modules/.bin/newman run https://api.getpostman.com/collections/18341107-2824841b-f489-4c15-aff1-dadab7242eb2?apikey=PMAK-61b2c1164bfcca0051634938-5c324410856a5ab2615f8de871a45bd6de --environment https://api.getpostman.com/environments/18341107-2824841b-f489-4c15-aff1-dadab7242eb2?apikey=PMAK-61b2c1164bfcca0051634938-5c324410856a5ab2615f8de871a45bd6de
