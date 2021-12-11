@@ -24,7 +24,7 @@ import os
 
 # github CI config
 print(os.getcwd())
-PANTHOMJS_PATH = '/home/runner/work/LYPZ_4156_Project/LYPZ_4156_Project/lib/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
     executable_path=PANTHOMJS_PATH, 
     service_log_path=os.path.devnull
