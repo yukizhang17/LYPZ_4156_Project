@@ -5,15 +5,26 @@ import traceback
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 from selenium import webdriver
+import os
 
 
 # local host config
 # PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-# driver = webdriver.PhantomJS(PANTHOMJS_PATH)
+# driver = webdriver.PhantomJS(
+#     executable_path=PANTHOMJS_PATH, 
+#     service_log_path=os.path.devnull
+# )
 
 # aws lambda config
-import os
-PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+# PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+# driver = webdriver.PhantomJS(
+#     executable_path=PANTHOMJS_PATH, 
+#     service_log_path=os.path.devnull
+# )
+
+# github CI config
+print(os.getcwd())
+PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
     executable_path=PANTHOMJS_PATH, 
     service_log_path=os.path.devnull
@@ -29,7 +40,8 @@ BESTBUY_API_KEY = "nU3Uo9RMMpqKmrhpm2if81bl"
 # local host config
 # DB_URL = "http://127.0.0.1:5000/"
 
-# aws lambda config
+
+# aws lambda & github CI config
 DB_URL = "https://whispering-peak-99211.herokuapp.com/"
 
 
@@ -118,9 +130,18 @@ def fetch_keyword_bestbuy(keyword):
     try:
         keyword = '+'.join(keyword.split(' '))
         url = BESTBUY_DOMAIN + "/searchpage.jsp?st={}".format(keyword)
-        print(url)
-        driver.get(url)
-        response = driver.page_source
+        # print(url)
+        headers = {
+			"User-Agent": "PostmanRuntime/7.28.4", 
+			"Accept-Encoding": "gzip, deflate, br", 
+			"Accept": "*/*", 
+			"Connection": "close", 
+		}
+        response = requests.get(url, headers=headers)
+        
+        # driver.get(url)
+        # response = driver.page_source
+
         return response
     except Exception as e:
         print(e)
@@ -245,7 +266,8 @@ def get_item_name_bestbuy(response):
 # get average product price from bestbuy keyword search web page
 def get_keyword_avg_price_bestbuy(response, keyword=None):
     try:
-        content = response
+        content = response.content
+        #content = response
         soup = BeautifulSoup(content, 'html.parser')
         search_results = soup.select('li.sku-item')
 
@@ -291,70 +313,70 @@ def get_keyword_avg_price_bestbuy(response, keyword=None):
 
 
 # comare prices of a product or a keyword
-def compare_prices(keyword, item_id=None, platform=None):
-    try:
-        result = {}
+# def compare_prices(keyword, item_id=None, platform=None):
+#     try:
+#         result = {}
 
-        # if the price of a keyword is to be compared
-        if keyword is not None:
-            # get amazon average price of products from the search results
-            # of the keyword
-            keyword_res_amazon = fetch_keyword_amazon(keyword)
-            amazon_price = get_keyword_avg_price_amazon(keyword_res_amazon)
+#         # if the price of a keyword is to be compared
+#         if keyword is not None:
+#             # get amazon average price of products from the search results
+#             # of the keyword
+#             keyword_res_amazon = fetch_keyword_amazon(keyword)
+#             amazon_price = get_keyword_avg_price_amazon(keyword_res_amazon)
 
-            # get bestbuy average price of products from the search results
-            # of the keyword
-            keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
-            bestbuy_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
+#             # get bestbuy average price of products from the search results
+#             # of the keyword
+#             keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
+#             bestbuy_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
 
-        # if the price of a product is to be compared
-        if item_id is not None and platform is not None:
-            # if the product to be compared is from amazon
-            if platform == 'amazon':
-                # get amazon price of the product
-                item_res = fetch_item_amazon(item_id)
-                amazon_price = get_item_price_amazon(item_res)
+#         # if the price of a product is to be compared
+#         if item_id is not None and platform is not None:
+#             # if the product to be compared is from amazon
+#             if platform == 'amazon':
+#                 # get amazon price of the product
+#                 item_res = fetch_item_amazon(item_id)
+#                 amazon_price = get_item_price_amazon(item_res)
 
-                # use the product name as keyword
-                keyword = get_item_name_amazon(item_res)
+#                 # use the product name as keyword
+#                 keyword = get_item_name_amazon(item_res)
 
-                # get bestbuy average price of products from the search results
-                # of the keyword
-                keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
-                bestbuy_price = get_keyword_avg_price_bestbuy(
-                    keyword_res_bestbuy, keyword
-                )
-            # if the product to be compared is from bestbuy
-            elif platform == 'bestbuy':
-                # get bestbuy price of the product
-                item_res = fetch_item_bestbuy(item_id)
-                bestbuy_price = get_item_price_bestbuy(item_res)
+#                 # get bestbuy average price of products from the search results
+#                 # of the keyword
+#                 keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
+#                 bestbuy_price = get_keyword_avg_price_bestbuy(
+#                     keyword_res_bestbuy, keyword
+#                 )
+#             # if the product to be compared is from bestbuy
+#             elif platform == 'bestbuy':
+#                 # get bestbuy price of the product
+#                 item_res = fetch_item_bestbuy(item_id)
+#                 bestbuy_price = get_item_price_bestbuy(item_res)
 
-                # use the product name as keyword
-                keyword = get_item_name_bestbuy(item_res)
+#                 # use the product name as keyword
+#                 keyword = get_item_name_bestbuy(item_res)
 
-                # get bestbuy average price of products from the search results
-                # of the keyword
-                keyword_res_amazon = fetch_keyword_amazon(keyword)
-                amazon_price = get_keyword_avg_price_amazon(
-                    keyword_res_amazon, keyword
-                )
+#                 # get bestbuy average price of products from the search results
+#                 # of the keyword
+#                 keyword_res_amazon = fetch_keyword_amazon(keyword)
+#                 amazon_price = get_keyword_avg_price_amazon(
+#                     keyword_res_amazon, keyword
+#                 )
 
-        if amazon_price is None and bestbuy_price is None:
-            return None
+#         if amazon_price is None and bestbuy_price is None:
+#             return None
 
-        timestamp = str(datetime.utcnow())
+#         timestamp = str(datetime.utcnow())
 
-        result['amazon_price'] = amazon_price
-        result['bestbuy_price'] = bestbuy_price
-        result['timestamp'] = timestamp
+#         result['amazon_price'] = amazon_price
+#         result['bestbuy_price'] = bestbuy_price
+#         result['timestamp'] = timestamp
 
-        return result
+#         return result
 
-    except Exception as e:
-        print(e)
-        traceback.print_exc()
-        return None
+#     except Exception as e:
+#         print(e)
+#         traceback.print_exc()
+#         return None
 
 
 # log product prices
@@ -444,12 +466,10 @@ def log_keyword_prices():
             # fetch keyword average price from amazon and bestbuy
             amazon_keyword_res = fetch_keyword_amazon(keyword)
             amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
-            print("amazon_price")
-            print(amazon_price)
+
             bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
             bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
-            print("bestbuy_price")
-            print(bestbuy_price)
+
             # format today's date
             today = str(date.today()).replace('-', '/')
 

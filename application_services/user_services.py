@@ -4,14 +4,16 @@ import requests
 import re
 
 # Jona Auth 0
-# CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
-# CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hra' + \
-#                'HNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
+CLIENT_ID = 'EfQZGs8qdAdrof7gkCU7hMN12M5yMi3G'
+CLIENT_SECRET = 'z-CiE8aGv75UMqTjZZf_Cmbs3hra' + \
+                'HNVhvKn92fMxpMl1FBm6kW5wZMK06Qk5W9Hc'
 
 # Yuqi Auth 0
+'''
 CLIENT_ID = '4B0wjTqzViFBcMRWBYXIDWBu8xSWJOg7'
 CLIENT_SECRET = 'A69T9TJGGzElqcDAFwHfFFSChs0sFq3c' + \
                 'Rg9Tibq2jUUwIBRoNIspQHkfO517AJZv'
+'''
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
 
@@ -43,7 +45,7 @@ def login_request(username, password):
 
     except Exception as e:
         error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]}
+        return {"status_code": error[0], "reason": error[1]}
 
 
 # Take username and password and api key (None is for application)
@@ -76,7 +78,7 @@ def validate_token(token):
         return rst
     except Exception as e:
         error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]}
+        return {"status_code": error[0], "reason": error[1]}
 
 
 # get user id using access token

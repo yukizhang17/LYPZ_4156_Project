@@ -1,19 +1,22 @@
 
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
-from application_services.user_services import CLIENT_ID, \
-    CLIENT_SECRET, validate_token, login_request, signup_request, \
+from application_services.user_services import validate_token, \
+    login_request, signup_request, \
     validate_all_api_form_fields, get_user_id, valid_email
 from application_services.subscribe import get_subscribe_input, \
     subscribe_product, get_unsubscribe_input, unsubscribe_product
 import uuid
 import os
+from flask_cors import CORS
+
 
 file_path = os.path.realpath(__file__)
 print(file_path)
 
 app = Flask(__name__)
 
+CORS(app)
 
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
@@ -132,55 +135,6 @@ def userinfo():
     return jsonify(validate_token(form["token"]))
 
 
-# @app.route('/compare', methods=['GET'])
-# def compare():
-#     # compare realtime amazon and bestbuy prices for keyword or item id
-#     form = request.form
-#     if not validate_all_api_form_fields(["token"], form):
-#         return jsonify(
-#             {
-#                 "reason": "missing required fields",
-#                 "status_code": 400
-#             }
-#         )
-#     validation_res = validate_token(form["token"])
-#     if 'email' not in validation_res:
-#         return jsonify(validation_res)
-
-#     if not validate_optional_api_form_fields(
-#         [["keyword"], ["item_id", "platform"]], form
-#     ):
-#         return jsonify(
-#             {
-#                 "reason": "missing required fields",
-#                 "status_code": 400
-#             }
-#         )
-
-#     keyword = None
-#     if "keyword" in form:
-#         keyword = form["keyword"]
-
-#     item_id = None
-#     if "item_id" in form:
-#         item_id = form["item_id"]
-
-#     platform = None
-#     if "platform" in form:
-#         platform = form["platform"]
-
-#     res = compare_prices(keyword, item_id, platform)
-
-#     if res is None:
-#         return jsonify(
-#             {
-#                 "reason": "unable to fetch prices, please try again",
-#                 "status_code": 400
-#             }
-#         )
-
-#     return jsonify(res)
-
 @app.route('/subscribe', methods=['POST'])
 def subscribe():
     form = request.form
@@ -268,7 +222,7 @@ def query_insert():
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
@@ -290,7 +244,7 @@ def query_delete():
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
@@ -312,7 +266,7 @@ def query_update():
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
