@@ -1,8 +1,8 @@
 
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
-from application_services.user_services import CLIENT_ID, \
-    CLIENT_SECRET, validate_token, login_request, signup_request, \
+from application_services.user_services import validate_token, \
+    login_request, signup_request, \
     validate_all_api_form_fields, get_user_id, valid_email
 from application_services.subscribe import get_subscribe_input, \
     subscribe_product, get_unsubscribe_input, unsubscribe_product
@@ -185,7 +185,8 @@ def userinfo():
 
 
 @app.route('/')
-
+def home():
+    return "Hello World"
 
 
 @app.route('/subscribe', methods=['POST'])
@@ -275,7 +276,7 @@ def query_insert():
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
@@ -297,7 +298,7 @@ def query_delete():
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
@@ -319,7 +320,7 @@ def query_update():
         ["access_token", "table"], form):
         return jsonify({
             "reason": "missing required fields",
-            "status_code": 400})  
+            "status_code": 400})
     if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
         return jsonify({
             "reason": "access denied",
