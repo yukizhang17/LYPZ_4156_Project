@@ -29,9 +29,17 @@ jobs:
           sudo tar xvjf $PHANTOM_JS.tar.bz2
           sudo mv $PHANTOM_JS /usr/local/share
           sudo ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
-
+          
     - name: analysis converage
       working-directory: ./unit_test
       run: |
         coverage run -m unittest discover
-        coverage html
+        coverage report --omit "test*"
+        coverage xml --omit "test*" -o test-coverage.xml
+        PERCENTAGE=$(coverage report --omit "test*" | tail -c 5 | head -c -2 | xargs)
+        echo "coverage = $PERCENTAGE%"
+        echo "::set-output name=RATE::$PERCENTAGE"
+        echo "::set-output name=COLOR::$([ $PERCENTAGE -lt 85 ] && echo important || echo success)"
+        echo "::set-output name=HASH_SHORT::$(git rev-parse --short HEAD)"
+
+
