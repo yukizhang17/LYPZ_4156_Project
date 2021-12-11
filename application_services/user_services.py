@@ -45,7 +45,7 @@ def login_request(username, password):
 
     except Exception as e:
         error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]}
+        return {"status_code": error[0], "reason": error[1]}
 
 
 # Take username and password and api key (None is for application)
@@ -78,7 +78,7 @@ def validate_token(token):
         return rst
     except Exception as e:
         error = str(e).split(":")
-        return {"code": error[0], "reason": error[1]}
+        return {"status_code": error[0], "reason": error[1]}
 
 
 # get user id using access token

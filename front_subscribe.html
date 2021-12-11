@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> 
+        <script src="https://malsup.github.io/jquery.form.js"></script> 
+        <script> 
+            function showMessage(reason, status_code){
+                console.log("1")
+                display_message.innerHTML= "status_code: "+ status_code + "    reason: " + reason;
+            }
+            function showMessage2(reason, status_code){
+                console.log("2")
+                display_message2.innerHTML= "status_code: "+ status_code + "    reason: " + reason;
+            }
+            $(document).ready(function() { 
+                web = 'http://127.0.0.1:5000'
+                // web = 'https://whispering-peak-99211.herokuapp.com/'
+                $('#form1')
+                    .ajaxForm({
+                        method: "POST",
+                        url: web + '/subscribe',
+                        dataType: 'json',
+                        success: function(data) {
+                            // console.log("here", data.reason, data.status_code)
+                            showMessage(data.reason, data.status_code)
+                        }
+                    }); 
+
+                $('#form2')
+                    .ajaxForm({
+                        method: "POST",
+                        url: web + '/unsubscribe',
+                        dataType: 'json',
+                        success: function(data) {
+                            // console.log("here", data.reason, data.status_code)
+                            showMessage2(data.reason, data.status_code)
+                        }
+                    }); 
+            })
+           
+        </script> 
+    </head>
+<body>
+    <h2>Subscribe</h2>
+    <form id="form1" method = "POST">
+        <label>User Access Token:</label><br>
+        <input type="text" id="access_token" name="access_token" value="Your user access token" ><br>
+        <label>Subscribe Item:</label><br>
+        <input type="text" id="product" name="product" value="Product ID or Keyword"> <br>
+        <label>Subscribe Type:</label><br>
+        <input type="text" id="type" name="type" value="productID or keyword"><br>
+        <label>Expected Price:</label><br>
+        <input type="text" id="expected_price" name="expected_price" value="Can be null"><br><br><br>
+        <input id="subscribe_submit_button" type="submit" value="Subscribe" ><br><br><br>
+    </form>
+
+    <p> Response: <span id = "display_message"></span> </p>
+
+    <h2>Unsubscribe</h2>
+    <form id="form2" method = "POST">
+        <label>User Access Token:</label><br>
+        <input type="text" id="access_token2" name="access_token" value="Your user access token" ><br>
+        <label>Subscribe Item:</label><br>
+        <input type="text" id="product2" name="product" value="Product ID or Keyword"> <br>
+        <label>Subscribe Type:</label><br>
+        <input type="text" id="type2" name="type" value="productID or keyword"><br>
+        <label>Expected Price:</label><br>
+        <input type="text" id="expected_price2" name="expected_price" value="Can be null"><br><br><br>
+        <input id="unsubscribe_submit_button" type="submit" value="Unsubscribe" ><br><br><br>
+    </form>
+
+    <p> Response: <span id = "display_message2"></span> </p>
+
+
+</body>
+</html>
