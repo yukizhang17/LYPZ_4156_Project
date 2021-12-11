@@ -42,6 +42,10 @@ jobs:
         echo "::set-output name=COLOR::$([ $PERCENTAGE -lt 85 ] && echo important || echo success)"
         echo "::set-output name=HASH_SHORT::$(git rev-parse --short HEAD)"
         
+    - name: Override Coverage Source Path for Sonar
+      working-directory: ./app
+      run: sed -i "s/\/home\/runner\/work\/LYPZ_4156_Project\/LYPZ_4156_Project\//\/github\/workspace\//g" test-coverage.xml
+        
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
