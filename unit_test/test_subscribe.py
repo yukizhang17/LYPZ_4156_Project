@@ -15,9 +15,7 @@ except Exception:
 
 
 class Test_Testsubscribe(unittest.TestCase):
-    def test_aa(self):
-        return None
-"""
+
     # Testcase 1: Test get subscribe input with keyword, product id
     def test_get_subscribe_input(self):
         # Test input with no platform
@@ -34,6 +32,16 @@ class Test_Testsubscribe(unittest.TestCase):
             "product": "ps5", "type": "keyword",
             "platform": None, "expected_price": None})
         self.assertEqual(get_subscribe_input(form2), respond2)
+
+        # Test out of range expected_price subscribe
+        expected_price = -10.99
+        form5 = {
+            "product": "B07H39W49Z", "type": "productID",
+            "platform": "Amazon", "expected_price": expected_price}
+        respond5 = (400, "Expected Price range (0,999999.99)")
+        self.assertEqual(get_subscribe_input(form5), respond5)
+        expected_price = 99999999
+        self.assertEqual(get_subscribe_input(form5), respond5)
 
         # Test missing required platform
         form3 = {"product": "B07H39W49R", "type": "productID"}
@@ -90,17 +98,36 @@ class Test_Testsubscribe(unittest.TestCase):
 
         unsubscribe_product(uid2, "ps9", type, platform)
 
+    # Testcase 3: Test subscribe with productID
+    def test_subscribe_product_productID(self):
+        product = "B07H39W49Z"
+        type = "productID"
+        platform = "Amazon"
+        expected_price = 10.99
+        uid = "1111"
+
+        # Test regular subscribe
+        respond1 = (200, "Subscribed successfully!")
+        self.assertEqual(subscribe_product(
+            uid, product, type, platform, expected_price), respond1)
+
+        # Test subscribe with incurrect platform
+        respond2 = (400, "Incurrect platform, Amazon or BestBuy, try again.")
+        self.assertEqual(subscribe_product(
+            uid, product, type, "Amazon1", expected_price), respond2)
+        unsubscribe_product("1111", "B07H39W49Z", "productID", "Amazon")
+
     # Testcase 4: Test generate_website currectly
     def test_generate_website(self):
         platform1 = "BestBuy"
         product1 = "1111111"
         platform2 = "Amazon"
-        product2 = "2222222"
+        product2 = "ASA2222222"
 
         respond1 = (200, "https://api.bestbuy.com/click/-/1111111/pdp")
         self.assertEqual(generate_website(platform1, product1), respond1)
 
-        respond2 = (200, "https://www.amazon.com/gp/product/2222222")
+        respond2 = (200, "https://www.amazon.com/gp/product/ASA2222222")
         self.assertEqual(generate_website(platform2, product2), respond2)
 
         platform3 = "Target"
@@ -122,12 +149,12 @@ class Test_Testsubscribe(unittest.TestCase):
 
         # Test correct input
         form4 = {
-            "product": "B07H39W49R1",
+            "product": "B07H39W49Z",
             "type": "productID", "platform": "Amazon"}
         respond4 = (
             200,
             {
-                "product": "B07H39W49R1",
+                "product": "B07H39W49Z",
                 "type": "productID",
                 "platform": "Amazon"
             }
@@ -161,7 +188,7 @@ class Test_Testsubscribe(unittest.TestCase):
 
     # Testcase 7: Test unsubscribe with productID
     def test_unsubscribe_product_productID(self):
-        product = "B1234567"
+        product = "B123456789"
         type = "productID"
         platform = "Amazon"
         expected_price = 10.99
@@ -180,11 +207,29 @@ class Test_Testsubscribe(unittest.TestCase):
         self.assertEqual(
             unsubscribe_product(uid, product, type, "Amazon1"), respond2)
 
-        # Test unsubscribe incurrect product_ID
+        # Test unsubscribe incurrect format product_ID
         respond3 = (
-            400, "No record, check product_ID and platform, try again.")
+            400, "Incurrect Amazon product id format, 10 letters/numbers only!"
+            )
         self.assertEqual(
-            unsubscribe_product(uid, "B00000000", type, platform), respond3)
+            unsubscribe_product(
+                uid, "B000012306789", type, platform), respond3)
+
+        # Test unsubscribe incurrect format product_ID
+        respond7 = (
+            400, "Incurrect Amazon product id format, 10 letters/numbers only!"
+            )
+        self.assertEqual(
+            unsubscribe_product(
+                uid, "B000012306789", type, platform), respond7)
+
+        # Test unsubscribe incurrect product_ID
+        respond6 = (
+            400, "Incurrect BestBuy product id format, 7 digits only!")
+        self.assertEqual(
+            unsubscribe_product(uid, "A1234", type, "BestBuy"), respond6)
+        self.assertEqual(
+            unsubscribe_product(uid, "A12346", type, "BestBuy"), respond6)
 
         # Test user never subscribe this product
         uid = "2222"
@@ -200,7 +245,7 @@ class Test_Testsubscribe(unittest.TestCase):
 
     # Testcase 8: Test subscribed productID has been subscribed before
     def test_subscribe_productID(self):
-        product = "B2345678"
+        product = "B234567891"
         type = "productID"
         platform = "Amazon"
         expected_price = 20.99
@@ -230,27 +275,7 @@ class Test_Testsubscribe(unittest.TestCase):
 
         unsubscribe_product(uid, product, type, platform)
         unsubscribe_product(uid2, product, type, platform)
-"""
+
 
 if __name__ == '__main__':
     unittest.main()
-"""
-    # Testcase 3: Test subscribe with productID
-    def test_subscribe_product_productID(self):
-        product = "B07H39W49R1"
-        type = "productID"
-        platform = "Amazon"
-        expected_price = 10.99
-        uid = "1111"
-
-        # Test regular subscribe
-        respond1 = (200, "Subscribed successfully!")
-        self.assertEqual(subscribe_product(
-            uid, product, type, platform, expected_price), respond1)
-
-        # Test subscribe with incurrect platform
-        respond2 = (400, "Incurrect platform, Amazon or BestBuy, try again.")
-        self.assertEqual(subscribe_product(
-            uid, product, type, "Amazon1", expected_price), respond2)
-        unsubscribe_product("1111", "B07H39W49R1", "productID", "Amazon")
-"""

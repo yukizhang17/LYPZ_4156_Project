@@ -8,12 +8,15 @@ from application_services.subscribe import get_subscribe_input, \
     subscribe_product, get_unsubscribe_input, unsubscribe_product
 import uuid
 import os
+from flask_cors import CORS
+
 
 file_path = os.path.realpath(__file__)
 print(file_path)
 
 app = Flask(__name__)
 
+CORS(app)
 
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'

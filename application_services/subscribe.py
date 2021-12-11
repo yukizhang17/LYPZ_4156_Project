@@ -10,9 +10,13 @@ def get_subscribe_input(form):
     if "expected_price" in form:
         expected_price = form["expected_price"]
         if expected_price:
-            expected_price = float(expected_price)
+            new_expected_price = float(expected_price)
+        if new_expected_price < 0:
+            return (400, "Expected Price range (0,999999.99)")
+        if new_expected_price > 999999.99:
+            return (400, "Expected Price range (0,999999.99)")
     else:
-        expected_price = None
+        new_expected_price = None
 
     # subscribe with productID, platform can't be Null,
     if "platform" not in form and type == "productID":
@@ -27,7 +31,7 @@ def get_subscribe_input(form):
         "product": product,
         "type": type,
         "platform": platform,
-        "expected_price": expected_price})
+        "expected_price": new_expected_price})
 
 
 def subscribe_product(uid, product, type, platform, expected_price):
@@ -79,6 +83,8 @@ def insert_frist_time(product, uid, expected_price, type, website):
 def insert_by_keyword(uid, keyword, expected_price):
     if not keyword:
         return (400, "missing keyword")
+    if len(keyword) > 128:
+        return (400, "Max keyword length is 128")
 
     sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
@@ -212,6 +218,9 @@ def unsubscribe_product(uid, product, type, platform):
 
 
 def delete_by_keyword(uid, keyword):
+    if len(keyword) > 128:
+        return (400, "Max keyword length is 128")
+
     sqliteConnection = SqliteService.get_db()
     cursor = sqliteConnection.cursor()
 
@@ -309,8 +318,19 @@ def delete_by_productID(uid, productID, website):
 
 def generate_website(platform, product):
     if platform == "Amazon":
+        if len(product) != 10:
+            return (
+                400,
+                "Incurrect Amazon product id format, 10 letters/numbers only!")
         website = "https://www.amazon.com/gp/product/" + product
     elif platform == "BestBuy":
+        if len(product) != 7:
+            return (400, "Incurrect BestBuy product id format, 7 digits only!")
+        product_lowercase = product.lower()
+        contains_letters = product_lowercase.islower()
+        if contains_letters:
+            return (400, "Incurrect BestBuy product id format, 7 digits only!")
+
         website = "https://api.bestbuy.com/click/-/" + product + "/pdp"
     else:
         return (400, "Incurrect platform, Amazon or BestBuy, try again.")
