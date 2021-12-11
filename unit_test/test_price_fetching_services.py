@@ -52,7 +52,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
 
     # Testcase 3:
     def test_fetch_item_amazon(self):
-        sample_amazon_item_id = "B09KMXCPKP"
+        sample_amazon_item_id = "B083F6TQG2"
         res = fetch_item_amazon(sample_amazon_item_id)
         self.assertIsNotNone(res)
 
@@ -78,13 +78,17 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
     def test_get_item_price_amazon(self):
         sample_amazon_item_id = "B083F6TQG2"
         res = fetch_item_amazon(sample_amazon_item_id)
+        print("test_get_item_price_amazon")
+        print(res)
         price = get_item_price_amazon(res)
         self.assertIsNotNone(price)
 
     # Testcase 8:
     def test_get_item_name_amazon(self):
-        sample_amazon_item_id = "B09KMXCPKP"
+        sample_amazon_item_id = "B083F6TQG2"
         res = fetch_item_amazon(sample_amazon_item_id)
+        print("test_get_item_name_amazon")
+        print(res)
         name = get_item_name_amazon(res)
         self.assertIsNotNone(name)
 
@@ -92,6 +96,8 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
     def test_get_keyword_avg_price_amazon(self):
         sample_keyword = "nintendo switch"
         res = fetch_keyword_amazon(sample_keyword)
+        print("test_get_keyword_avg_price_amazon")
+        print(res)
         price = get_keyword_avg_price_amazon(res)
         self.assertIsNotNone(price)
 
