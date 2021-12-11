@@ -5,15 +5,25 @@ import traceback
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 from selenium import webdriver
+import os
 
 
 # local host config
 # PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-# driver = webdriver.PhantomJS(PANTHOMJS_PATH)
+# driver = webdriver.PhantomJS(
+#     executable_path=PANTHOMJS_PATH, 
+#     service_log_path=os.path.devnull
+# )
 
 # aws lambda config
-import os
-PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+# PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
+# driver = webdriver.PhantomJS(
+#     executable_path=PANTHOMJS_PATH, 
+#     service_log_path=os.path.devnull
+# )
+
+# github CI config
+PANTHOMJS_PATH = '../lib/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
 driver = webdriver.PhantomJS(
     executable_path=PANTHOMJS_PATH, 
     service_log_path=os.path.devnull
@@ -29,7 +39,8 @@ BESTBUY_API_KEY = "nU3Uo9RMMpqKmrhpm2if81bl"
 # local host config
 # DB_URL = "http://127.0.0.1:5000/"
 
-# aws lambda config
+
+# aws lambda & github CI config
 DB_URL = "https://whispering-peak-99211.herokuapp.com/"
 
 
@@ -118,9 +129,18 @@ def fetch_keyword_bestbuy(keyword):
     try:
         keyword = '+'.join(keyword.split(' '))
         url = BESTBUY_DOMAIN + "/searchpage.jsp?st={}".format(keyword)
-        print(url)
-        driver.get(url)
-        response = driver.page_source
+        # print(url)
+        headers = {
+			"User-Agent": "PostmanRuntime/7.28.4", 
+			"Accept-Encoding": "gzip, deflate, br", 
+			"Accept": "*/*", 
+			"Connection": "close", 
+		}
+        response = requests.get(url, headers=headers)
+        
+        # driver.get(url)
+        # response = driver.page_source
+
         return response
     except Exception as e:
         print(e)
@@ -245,7 +265,8 @@ def get_item_name_bestbuy(response):
 # get average product price from bestbuy keyword search web page
 def get_keyword_avg_price_bestbuy(response, keyword=None):
     try:
-        content = response
+        content = response.content
+        #content = response
         soup = BeautifulSoup(content, 'html.parser')
         search_results = soup.select('li.sku-item')
 
@@ -444,12 +465,10 @@ def log_keyword_prices():
             # fetch keyword average price from amazon and bestbuy
             amazon_keyword_res = fetch_keyword_amazon(keyword)
             amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
-            print("amazon_price")
-            print(amazon_price)
+
             bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
             bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
-            print("bestbuy_price")
-            print(bestbuy_price)
+
             # format today's date
             today = str(date.today()).replace('-', '/')
 

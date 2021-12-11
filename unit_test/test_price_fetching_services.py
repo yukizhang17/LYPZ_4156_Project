@@ -3,26 +3,28 @@ import unittest
 import os
 import sys
 import numpy as np
+import requests
+from datetime import datetime
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-"""
+
 try:
     from application_services.price_fetching_services import \
         validate_optional_api_form_fields, reject_outliers, \
         fetch_item_amazon, fetch_keyword_amazon, fetch_item_bestbuy, \
         fetch_keyword_bestbuy, get_item_price_amazon, get_item_name_amazon, \
         get_keyword_avg_price_amazon, get_item_price_bestbuy, \
-        get_item_name_bestbuy, get_keyword_avg_price_bestbuy, compare_prices
+        get_item_name_bestbuy, get_keyword_avg_price_bestbuy, compare_prices, \
+        log_product_prices, log_keyword_prices, DB_SELECT_URL, DB_UPDATE_URL
 except Exception:
     raise
 
-"""
 class Test_TestPriceFetchingServices(unittest.TestCase):
     def test_all(self):
         return True
-"""
+
     # Testcase 1:
     def test_validate_optional_api_form_fields(self):
         form = {}
@@ -74,7 +76,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
 
     # Testcase 7:
     def test_get_item_price_amazon(self):
-        sample_amazon_item_id = "B09KMXCPKP"
+        sample_amazon_item_id = "B083F6TQG2"
         res = fetch_item_amazon(sample_amazon_item_id)
         price = get_item_price_amazon(res)
         self.assertIsNotNone(price)
@@ -128,7 +130,125 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
 
         res_3 = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
         self.assertIsNotNone(res_3)
-"""
+
+    # Testcase 14:
+    def test_log_product_prices(self):
+        try:
+            # get original subscribed product records
+            form = {
+                'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
+                'table': 'subscription_product_id'
+            }        
+            res = requests.get(DB_SELECT_URL, data=form)
+            self.assertIsNotNone(res)
+            subscribed_items_original = res.json()
+        
+            # run log_product_prices and get the number of logged records
+            logged_count = log_product_prices()
+
+            # the number returned should match the number of subscribed product records
+            self.assertEqual(len(subscribed_items_original), logged_count)
+
+            # get new subscribed product records
+            res = requests.get(DB_SELECT_URL, data=form)
+            self.assertIsNotNone(res)
+            subscribed_items_updated = res.json()
+
+            # for each record, parse and check price history length
+            for i in range(len(subscribed_items_original)):
+                original_record = subscribed_items_original[i]
+                original_price_history = original_record[2]
+                original_price_entries = original_price_history.split(',')
+
+                updated_record = subscribed_items_updated[i]
+                updated_price_history = updated_record[2]
+                updated_price_entries = updated_price_history.split(',')
+
+                # the new price history should contain one more log than the old price history
+                self.assertEqual(len(original_price_entries) + 1, len(updated_price_entries))
+
+                date = updated_price_entries[-1][:10]
+                today = datetime.today().strftime('%Y/%m/%d')
+
+                # the latest log should have today's date
+                self.assertEqual(date, today)
+
+                form['where_sid'] = original_record[0]
+                form['update_price_history'] = original_record[2]            
+
+                # update the db with the original product record
+                res = requests.post(DB_UPDATE_URL, data=form)
+
+        except Exception as e:
+            for i in range(len(subscribed_items_original)):
+
+                original_record = subscribed_items_original[i]
+                form['where_sid'] = original_record[0]
+                form['update_price_history'] = original_record[2]            
+
+                # update the db with the original product record
+                res = requests.post(DB_UPDATE_URL, data=form)
+
+    # Testcase 15:
+    def test_log_keyword_prices(self):
+        try:
+            # get original subscribed product records
+            form = {
+                'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
+                'table': 'subscription_keyword'
+            }        
+            res = requests.get(DB_SELECT_URL, data=form)
+            self.assertIsNotNone(res)
+            subscribed_keywords_original = res.json()
+        
+            # run log_product_prices and get the number of logged records
+            logged_count = log_keyword_prices()
+
+            # the number returned should match the number of subscribed product records
+            self.assertEqual(len(subscribed_keywords_original), logged_count)
+
+            # get new subscribed product records
+            res = requests.get(DB_SELECT_URL, data=form)
+            self.assertIsNotNone(res)
+            subscribed_keywords_updated = res.json()
+
+            # for each record, parse and check price history length
+            for i in range(len(subscribed_keywords_original)):
+                original_record = subscribed_keywords_original[i]
+                original_price_history = original_record[2]
+                original_price_entries = original_price_history.split(',')
+
+                updated_record = subscribed_keywords_updated[i]
+                updated_price_history = updated_record[2]
+                updated_price_entries = updated_price_history.split(',')
+
+                # the new price history should contain one more log than the old price history
+                self.assertEqual(len(original_price_entries) + 2, len(updated_price_entries))
+
+                date_1 = updated_price_entries[-1][:10]
+                date_2 = updated_price_entries[-2][:10]
+                today = datetime.today().strftime('%Y/%m/%d')
+
+                # the latest 2 log should have today's date
+                self.assertEqual(date_1, today)
+                self.assertEqual(date_2, today)
+
+                form['where_sid'] = original_record[0]
+                form['update_price_history'] = original_record[2]            
+
+                # update the db with the original product record
+                res = requests.post(DB_UPDATE_URL, data=form)
+
+        except Exception as e:
+            for i in range(len(subscribed_keywords_original)):
+
+                original_record = subscribed_keywords_original[i]
+                form['where_sid'] = original_record[0]
+                form['update_price_history'] = original_record[2]            
+
+                # update the db with the original product record
+                res = requests.post(DB_UPDATE_URL, data=form)
+
 
 if __name__ == '__main__':
     unittest.main()
