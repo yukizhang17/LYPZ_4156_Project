@@ -16,7 +16,7 @@ try:
         fetch_item_amazon, fetch_keyword_amazon, fetch_item_bestbuy, \
         fetch_keyword_bestbuy, get_item_price_amazon, get_item_name_amazon, \
         get_keyword_avg_price_amazon, get_item_price_bestbuy, \
-        get_item_name_bestbuy, get_keyword_avg_price_bestbuy, compare_prices, \
+        get_item_name_bestbuy, get_keyword_avg_price_bestbuy, \
         log_product_prices, log_keyword_prices, DB_SELECT_URL, DB_UPDATE_URL
 except Exception:
     raise
@@ -116,22 +116,22 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
         price = get_keyword_avg_price_bestbuy(res)
         self.assertIsNotNone(price)
 
+    # # Testcase 13:
+    # def test_compare_prices(self):
+    #     sample_keyword = "nintendo switch"
+    #     sample_amazon_item_id = "B09KMXCPKP"
+    #     sample_best_buy_item_id = "6401728"
+
+    #     res_1 = compare_prices(sample_keyword)
+    #     self.assertIsNotNone(res_1)
+
+    #     res_2 = compare_prices(None, sample_amazon_item_id, 'amazon')
+    #     self.assertIsNotNone(res_2)
+
+    #     res_3 = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
+    #     self.assertIsNotNone(res_3)
+
     # Testcase 13:
-    def test_compare_prices(self):
-        sample_keyword = "nintendo switch"
-        sample_amazon_item_id = "B09KMXCPKP"
-        sample_best_buy_item_id = "6401728"
-
-        res_1 = compare_prices(sample_keyword)
-        self.assertIsNotNone(res_1)
-
-        res_2 = compare_prices(None, sample_amazon_item_id, 'amazon')
-        self.assertIsNotNone(res_2)
-
-        res_3 = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
-        self.assertIsNotNone(res_3)
-
-    # Testcase 14:
     def test_log_product_prices(self):
         try:
             # get original subscribed product records
@@ -157,11 +157,11 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
             # for each record, parse and check price history length
             for i in range(len(subscribed_items_original)):
                 original_record = subscribed_items_original[i]
-                original_price_history = original_record[2]
+                original_price_history = original_record[3]
                 original_price_entries = original_price_history.split(',')
 
                 updated_record = subscribed_items_updated[i]
-                updated_price_history = updated_record[2]
+                updated_price_history = updated_record[3]
                 updated_price_entries = updated_price_history.split(',')
 
                 # the new price history should contain one more log than the old price history
@@ -174,7 +174,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
                 self.assertEqual(date, today)
 
                 form['where_sid'] = original_record[0]
-                form['update_price_history'] = original_record[2]            
+                form['update_price_history'] = original_record[3]
 
                 # update the db with the original product record
                 res = requests.post(DB_UPDATE_URL, data=form)
@@ -184,12 +184,12 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
 
                 original_record = subscribed_items_original[i]
                 form['where_sid'] = original_record[0]
-                form['update_price_history'] = original_record[2]            
+                form['update_price_history'] = original_record[3]
 
                 # update the db with the original product record
                 res = requests.post(DB_UPDATE_URL, data=form)
 
-    # Testcase 15:
+    # Testcase 14:
     def test_log_keyword_prices(self):
         try:
             # get original subscribed product records
@@ -219,7 +219,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
                 original_price_entries = original_price_history.split(',')
 
                 updated_record = subscribed_keywords_updated[i]
-                updated_price_history = updated_record[2]
+                updated_price_history = updated_record[3]
                 updated_price_entries = updated_price_history.split(',')
 
                 # the new price history should contain one more log than the old price history
@@ -234,7 +234,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
                 self.assertEqual(date_2, today)
 
                 form['where_sid'] = original_record[0]
-                form['update_price_history'] = original_record[2]            
+                form['update_price_history'] = original_record[2]
 
                 # update the db with the original product record
                 res = requests.post(DB_UPDATE_URL, data=form)
@@ -244,7 +244,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
 
                 original_record = subscribed_keywords_original[i]
                 form['where_sid'] = original_record[0]
-                form['update_price_history'] = original_record[2]            
+                form['update_price_history'] = original_record[2]
 
                 # update the db with the original product record
                 res = requests.post(DB_UPDATE_URL, data=form)
