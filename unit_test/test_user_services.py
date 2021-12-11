@@ -38,7 +38,7 @@ class Test_TestUserServices(unittest.TestCase):
         self.assertFalse(valid_email("dededad@gmail"))
         self.assertTrue(valid_email("asdad@gmail.com"))
         self.assertTrue(valid_email("daioda@columbia.edu"))
-"""
+
     # Testcase 2:
     def test_signup_request(self):
         email = uuid.uuid4().hex
@@ -55,18 +55,24 @@ class Test_TestUserServices(unittest.TestCase):
             ).json()["statusCode"] == 400)
 
         application_email = email + "@gmail.com"
+
         application_password = "LYPZ4156"
+
         api_key = "6f074b5f90a147e78988ca4ee373191f"
+
+        
+
         self.assertTrue("_id" in signup_request(
             application_email,
             application_password,
             api_key).json()
             )
 
+
     # Testcase 3:
     def test_login_request(self):
-        username = "test1100@columbia.edu_' + \
-                    'apikey_6f074b5f90a147e78988ca4ee373191f"
+        username = 'jonathan.jsliu@gmail.com_' + \
+                    'apikey_6f074b5f90a147e78988ca4ee373191f'
         user_password = "LYPZ4156"
 
         self.assertTrue("access_token" in login_request(
@@ -108,7 +114,7 @@ class Test_TestUserServices(unittest.TestCase):
 
         self.assertTrue(get_user_id(access_token) == id)
         self.assertFalse(get_user_id(access_token[0:-1]))
-"""
+
 
 
 
