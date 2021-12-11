@@ -181,13 +181,6 @@ def userinfo():
 
 #     return jsonify(res)
 
-
-
-
-@app.route('/')
-
-
-
 @app.route('/subscribe', methods=['POST'])
 def subscribe():
     form = request.form
