@@ -23,10 +23,15 @@ import os
 # )
 
 # github CI config
-print(os.getcwd())
+service_args = [
+    '--web-security=false',
+    '--ssl-protocol=any',
+    '--ignore-ssl-errors=true',
+]
 PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
-    executable_path=PANTHOMJS_PATH, 
+    executable_path=PANTHOMJS_PATH,
+    service_args=service_args,
     service_log_path=os.path.devnull
 )
 
