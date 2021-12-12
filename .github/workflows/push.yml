@@ -40,13 +40,14 @@ jobs:
     - name: analysis converage
       working-directory: ./unit_test
       run: |   
-        coverage run -m unittest discover test
+        coverage run -m unittest discover
         coverage report --omit "test_*"
         coverage xml --omit "test_*" -o test-coverage.xml
         PERCENTAGE=$(coverage report --omit "test_*" | tail -c 5 | head -c -2 | xargs)
         echo "coverage = $PERCENTAGE%"
         echo "::set-output name=RATE::$PERCENTAGE"
         echo "::set-output name=COLOR::$([ $PERCENTAGE -lt 85 ] && echo important || echo success)"
+        echo "::set-output name=HASH_SHORT::$(git rev-parse --short HEAD)"
         
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
