@@ -34,7 +34,7 @@ jobs:
       working-directory: ./unit_test
       run: |
         
-        coverage run -m test_user_services.py
+        coverage run test_user_services.py
         coverage report --omit "test_*"
         coverage xml --omit "test_*" -o test-coverage.xml
         PERCENTAGE=$(coverage report --omit "test_*" | tail -c 5 | head -c -2 | xargs)
