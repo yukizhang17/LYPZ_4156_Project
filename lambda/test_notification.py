@@ -8,7 +8,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
 try:
-    from application_services.notification import get_notification_interval, \
+    from notification import get_notification_interval, \
         get_all_users, get_user_subscription, get_price_history, \
         find_min_max_avg_price_product, find_min_max_avg_price_keyword, \
         collect_data, get_date

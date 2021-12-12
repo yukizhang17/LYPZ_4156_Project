@@ -11,7 +11,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
 try:
-    from application_services.price_fetching_services import \
+    from price_fetching_services import \
         validate_optional_api_form_fields, reject_outliers, \
         fetch_item_amazon, fetch_keyword_amazon, fetch_item_bestbuy, \
         fetch_keyword_bestbuy, get_item_price_amazon, get_item_name_amazon, \
