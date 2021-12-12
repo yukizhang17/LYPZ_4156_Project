@@ -7,11 +7,17 @@ from datetime import datetime, date
 from selenium import webdriver
 import os
 
+service_args = [
+    '--web-security=false',
+    '--ssl-protocol=any',
+    '--ignore-ssl-errors=true',
+]
 
 # local host config
 # PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
 # driver = webdriver.PhantomJS(
 #     executable_path=PANTHOMJS_PATH, 
+#     service_args=service_args,
 #     service_log_path=os.path.devnull
 # )
 
@@ -19,15 +25,11 @@ import os
 # PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
 # driver = webdriver.PhantomJS(
 #     executable_path=PANTHOMJS_PATH, 
+#     service_args=service_args,
 #     service_log_path=os.path.devnull
 # )
 
 # github CI config
-service_args = [
-    '--web-security=false',
-    '--ssl-protocol=any',
-    '--ignore-ssl-errors=true',
-]
 PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
     executable_path=PANTHOMJS_PATH,
@@ -245,7 +247,7 @@ def get_keyword_avg_price_amazon(response, keyword=None):
 def get_item_price_bestbuy(response):
     try:
         response_json = json.loads(response.content)
-        if response_json['onSale'] is False:
+        if 'onSale' in response_json and response_json['onSale'] is False:
             price = response_json['regularPrice']
         else:
             price = response_json['salePrice']
@@ -417,6 +419,9 @@ def log_product_prices():
                 item_res = fetch_item_bestbuy(item_id)
                 price = get_item_price_bestbuy(item_res)
 
+            print("price")
+            print(price)
+
             # if price is None, log nothing
             if price is None:
                 price = 'None'
@@ -471,9 +476,12 @@ def log_keyword_prices():
             # fetch keyword average price from amazon and bestbuy
             amazon_keyword_res = fetch_keyword_amazon(keyword)
             amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
-
+            print("amazon_price")
+            print(amazon_price)
             bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
             bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
+            print("bestbuy_price")
+            print(bestbuy_price)
 
             # format today's date
             today = str(date.today()).replace('-', '/')
