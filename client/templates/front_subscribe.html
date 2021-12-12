@@ -43,21 +43,37 @@
 <body>
     <h3 id = "status">{{user.login_status}}</h3>
 
+    <h2>Update Notification Interval</h2>
+    <form action="/update-interval" method="post">
+        <input type="radio" id="off" name="interval" value="off">
+        <label for="off">off</label><br>
+        <input type="radio" id="daily" name="interval" value="daily">
+        <label for="daily">daily</label><br>
+        <input type="radio" id="weekly" name="interval" value="weekly">
+        <label for="weekly">weekly</label><br>
+        <input type="radio" id="monthly" name="interval" value="monthly">
+        <label for="monthly">monthly</label><br>
+        <input type="hidden" id="access_token" name="access_token" value= "{{user.accesstoken}}"><br>
+        <input type="submit" value="Submit">
+    </form>
+
     <h2>Subscribe</h2>
     <form id="form1" method = "POST">
-        <input type="hidden" id="access_token" name="access_token" value= "{{user.accesstoken}}"><br>
         <label>Subscribe Item:</label><br>
         <input type="text" id="product" name="product" value="Product ID or Keyword"> <br>
         <label>Subscribe Type:</label><br>
-        <input type="radio" id="type" name="type" value="productID">
+        <input type="radio" id="productID" name="type" value="productID">
         <label for="productID">productID</label><br>
         <input type="radio" id="type" name="type" value="keyword">
         <label for="keyword">keyword</label><br>
-        
         <label>Platform:</label><br>
-        <input type="text" id="platform" name="platform" value="BestBuy or Amazon"><br>
+        <input type="radio" id="bestbuy" name="platform" value="bestbuy">
+        <label for="bestbuy">BestBuy</label><br>
+        <input type="radio" id="amazon" name="platform" value="amazon">
+        <label for="amazon">Amazon</label><br>
         <label>Expected Price:</label><br>
-        <input type="text" id="expected_price" name="expected_price" value="Can be null"><br><br><br>
+        <input type="text" id="expected_price" name="expected_price" value="Can be null"><br><br>
+        <input type="hidden" id="access_token" name="access_token" value= "{{user.accesstoken}}"><br>
         <input id="subscribe_submit_button" type="submit" value="Subscribe" ><br><br><br>
     </form>
 
@@ -65,13 +81,19 @@
 
     <h2>Unsubscribe</h2>
     <form id="form2" method = "POST">
-        <input type="hidden" id="access_token2" name="access_token" value="{{user.accesstoken}}" ><br>
         <label>Subscribe Item:</label><br>
         <input type="text" id="product2" name="product" value="Product ID or Keyword"> <br>
         <label>Subscribe Type:</label><br>
-        <input type="text" id="type2" name="type" value="productID or keyword"><br>
+        <input type="radio" id="type" name="type" value="productID">
+        <label for="productID">productID</label><br>
+        <input type="radio" id="type" name="type" value="keyword">
+        <label for="keyword">keyword</label><br>
         <label>Platform:</label><br>
-        <input type="text" id="platform" name="platform" value="BestBuy or Amazon"><br><br><br>
+        <input type="radio" id="platform" name="platform" value="BestBuy">
+        <label for="bestbuy">BestBuy</label><br>
+        <input type="radio" id="platform" name="platform" value="Amazon">
+        <label for="amazon">Amazon</label><br><br>
+        <input type="hidden" id="access_token2" name="access_token" value="{{user.accesstoken}}" ><br>
         <input id="unsubscribe_submit_button" type="submit" value="Unsubscribe" ><br><br><br>
     </form>
 
@@ -79,8 +101,8 @@
 
     <h2>All Subscriptions</h2>
     <form id="form3" action="/subscription" method="post">
-        <input type="hidden" id="uid" name="uid" value="{{user.uid}}" ><br>
         <input type="submit" value="Show">
+        <input type="hidden" id="uid" name="uid" value="{{user.uid}}" ><br>
     </form>
 
     <label>Subscribed Keywords:</label><br>
