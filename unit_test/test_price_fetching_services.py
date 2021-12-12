@@ -17,7 +17,8 @@ try:
         fetch_keyword_bestbuy, get_item_price_amazon, get_item_name_amazon, \
         get_keyword_avg_price_amazon, get_item_price_bestbuy, \
         get_item_name_bestbuy, get_keyword_avg_price_bestbuy, \
-        log_product_prices, log_keyword_prices, DB_SELECT_URL, DB_UPDATE_URL
+        log_product_prices, log_keyword_prices, DB_SELECT_URL, DB_UPDATE_URL, \
+        compare_prices
 except Exception:
     raise
 
@@ -123,21 +124,21 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
         self.assertIsNotNone(price)
 
     # # Testcase 13:
-    # def test_compare_prices(self):
-    #     sample_keyword = "nintendo switch"
-    #     sample_amazon_item_id = "B09KMXCPKP"
-    #     sample_best_buy_item_id = "6401728"
+    def test_compare_prices(self):
+        sample_keyword = "nintendo switch"
+        sample_amazon_item_id = "B09KMXCPKP"
+        sample_best_buy_item_id = "6401728"
 
-    #     res_1 = compare_prices(sample_keyword)
-    #     self.assertIsNotNone(res_1)
+        res_1 = compare_prices(sample_keyword)
+        self.assertIsNotNone(res_1)
 
-    #     res_2 = compare_prices(None, sample_amazon_item_id, 'amazon')
-    #     self.assertIsNotNone(res_2)
+        res_2 = compare_prices(None, sample_amazon_item_id, 'amazon')
+        self.assertIsNotNone(res_2)
 
-    #     res_3 = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
-    #     self.assertIsNotNone(res_3)
+        res_3 = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
+        self.assertIsNotNone(res_3)
 
-    # Testcase 13:
+    # Testcase 14:
     def test_log_product_prices(self):
         try:
             # get original subscribed product records
@@ -195,7 +196,7 @@ class Test_TestPriceFetchingServices(unittest.TestCase):
                 # update the db with the original product record
                 res = requests.post(DB_UPDATE_URL, data=form)
 
-    # Testcase 14:
+    # Testcase 15:
     def test_log_keyword_prices(self):
         try:
             # get original subscribed product records

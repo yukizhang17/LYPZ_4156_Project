@@ -6,6 +6,8 @@ from application_services.user_services import validate_token, \
     validate_all_api_form_fields, get_user_id, valid_email
 from application_services.subscribe import get_subscribe_input, \
     subscribe_product, get_unsubscribe_input, unsubscribe_product
+from application_services.price_fetching_services import compare_prices, \
+    validate_optional_api_form_fields
 import uuid
 import os
 from flask_cors import CORS
@@ -312,6 +314,56 @@ def update_email_preference():
          {"uid":uid}
     )
     return jsonify(rst)
+
+
+@app.route('/compare', methods=['GET'])
+def compare():
+    # compare realtime amazon and bestbuy prices for keyword or item id
+    form = request.form
+    if not validate_all_api_form_fields(["token"], form):
+        return jsonify(
+            {
+                "reason": "missing required fields",
+                "status_code": 400
+            }
+        )
+    validation_res = validate_token(form["token"])
+    if 'email' not in validation_res:
+        return jsonify(validation_res)
+
+    if not validate_optional_api_form_fields(
+        [["keyword"], ["item_id", "platform"]], form
+    ):
+        return jsonify(
+            {
+                "reason": "missing required fields",
+                "status_code": 400
+            }
+        )
+
+    keyword = None
+    if "keyword" in form:
+        keyword = form["keyword"]
+
+    item_id = None
+    if "item_id" in form:
+        item_id = form["item_id"]
+
+    platform = None
+    if "platform" in form:
+        platform = form["platform"]
+
+    res = compare_prices(keyword, item_id, platform)
+
+    if res is None:
+        return jsonify(
+            {
+                "reason": "unable to fetch prices, please try again",
+                "status_code": 400
+            }
+        )
+
+    return jsonify(res)
 
 
 if __name__ == '__main__':
