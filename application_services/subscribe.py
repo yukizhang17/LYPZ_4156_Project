@@ -3,7 +3,6 @@ from database_services.sql_service import SqliteService
 
 SUCCESS = "Subscribed successfully!"
 
-
 def get_subscribe_input(form):
     product = form["product"]
     type = form["type"]
