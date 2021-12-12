@@ -78,10 +78,11 @@ class Test_TestUserServices(unittest.TestCase):
             ))
 
         user_password = "LYPZ4155"
+
         self.assertTrue(login_request(
             username,
             user_password
-            )["code"] == "403")
+            )['status_code'] == "403")
 
     # Testcase 4:
     def test_validate_token(self):
@@ -97,7 +98,7 @@ class Test_TestUserServices(unittest.TestCase):
 
         access_token = access_token[0:-1]
 
-        self.assertTrue("code" in validate_token(access_token))
+        self.assertTrue('status_code' in validate_token(access_token))
 
     # Testcase 5:
     def test_get_user_id(self):
