@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LYPZ</title>
+    </head>
+
+    <body>
+        <h1>Track the Price</h1>
+        <p>This is a price tracking website</p>
+
+        <h2 id = "status">{{signup_status}}</h2>
+
+        <form action="/signup" method="post">
+            <label for="email">Email</label><br>
+            <input type="text" id="email" name="email"><br>
+            <label for="password">Password:</label><br>
+            <input type="text" id="password" name="password"><br><br>
+            <input type="submit" value="Submit">
+        </form> 
+
+        <p>If you click the "Submit" button, the form-data will be sent to a page called "/signup".</p>
+
+
+        <h2 id = "status">{{login_status}}</h2>
+
+        <form action="/login" method="post">
+            <label for="email">Email</label><br>
+            <input type="text" id="email" name="email"><br>
+            <label for="password">Password:</label><br>
+            <input type="text" id="password" name="password"><br><br>
+            <input type="submit" value="Submit">
+        </form> 
+
+        <p>If you click the "Submit" button, the form-data will be sent to a page called "/login".</p>
+
+    </body>
+</html>

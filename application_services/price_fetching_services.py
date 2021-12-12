@@ -7,11 +7,17 @@ from datetime import datetime, date
 from selenium import webdriver
 import os
 
+service_args = [
+    '--web-security=false',
+    '--ssl-protocol=any',
+    '--ignore-ssl-errors=true',
+]
 
 # local host config
 # PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
 # driver = webdriver.PhantomJS(
 #     executable_path=PANTHOMJS_PATH, 
+#     service_args=service_args,
 #     service_log_path=os.path.devnull
 # )
 
@@ -19,15 +25,11 @@ import os
 # PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
 # driver = webdriver.PhantomJS(
 #     executable_path=PANTHOMJS_PATH, 
+#     service_args=service_args,
 #     service_log_path=os.path.devnull
 # )
 
 # github CI config
-service_args = [
-    '--web-security=false',
-    '--ssl-protocol=any',
-    '--ignore-ssl-errors=true',
-]
 PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
     executable_path=PANTHOMJS_PATH,
@@ -245,10 +247,11 @@ def get_keyword_avg_price_amazon(response, keyword=None):
 def get_item_price_bestbuy(response):
     try:
         response_json = json.loads(response.content)
-        if response_json['onSale'] is False:
-            price = response_json['regularPrice']
-        else:
+        price = None
+        if 'onSale' in response_json and response_json['onSale'] is True:
             price = response_json['salePrice']
+        elif 'regularPrice' in response_json:
+            price = response_json['regularPrice']
         return price
     except Exception as e:
         print(e)
@@ -318,70 +321,70 @@ def get_keyword_avg_price_bestbuy(response, keyword=None):
 
 
 # comare prices of a product or a keyword
-# def compare_prices(keyword, item_id=None, platform=None):
-#     try:
-#         result = {}
+def compare_prices(keyword, item_id=None, platform=None):
+    try:
+        result = {}
 
-#         # if the price of a keyword is to be compared
-#         if keyword is not None:
-#             # get amazon average price of products from the search results
-#             # of the keyword
-#             keyword_res_amazon = fetch_keyword_amazon(keyword)
-#             amazon_price = get_keyword_avg_price_amazon(keyword_res_amazon)
+        # if the price of a keyword is to be compared
+        if keyword is not None:
+            # get amazon average price of products from the search results
+            # of the keyword
+            keyword_res_amazon = fetch_keyword_amazon(keyword)
+            amazon_price = get_keyword_avg_price_amazon(keyword_res_amazon)
 
-#             # get bestbuy average price of products from the search results
-#             # of the keyword
-#             keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
-#             bestbuy_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
+            # get bestbuy average price of products from the search results
+            # of the keyword
+            keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
+            bestbuy_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
 
-#         # if the price of a product is to be compared
-#         if item_id is not None and platform is not None:
-#             # if the product to be compared is from amazon
-#             if platform == 'amazon':
-#                 # get amazon price of the product
-#                 item_res = fetch_item_amazon(item_id)
-#                 amazon_price = get_item_price_amazon(item_res)
+        # if the price of a product is to be compared
+        if item_id is not None and platform is not None:
+            # if the product to be compared is from amazon
+            if platform == 'amazon':
+                # get amazon price of the product
+                item_res = fetch_item_amazon(item_id)
+                amazon_price = get_item_price_amazon(item_res)
 
-#                 # use the product name as keyword
-#                 keyword = get_item_name_amazon(item_res)
+                # use the product name as keyword
+                keyword = get_item_name_amazon(item_res)
 
-#                 # get bestbuy average price of products from the search results
-#                 # of the keyword
-#                 keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
-#                 bestbuy_price = get_keyword_avg_price_bestbuy(
-#                     keyword_res_bestbuy, keyword
-#                 )
-#             # if the product to be compared is from bestbuy
-#             elif platform == 'bestbuy':
-#                 # get bestbuy price of the product
-#                 item_res = fetch_item_bestbuy(item_id)
-#                 bestbuy_price = get_item_price_bestbuy(item_res)
+                # get bestbuy average price of products from the search results
+                # of the keyword
+                keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
+                bestbuy_price = get_keyword_avg_price_bestbuy(
+                    keyword_res_bestbuy, keyword
+                )
+            # if the product to be compared is from bestbuy
+            elif platform == 'bestbuy':
+                # get bestbuy price of the product
+                item_res = fetch_item_bestbuy(item_id)
+                bestbuy_price = get_item_price_bestbuy(item_res)
 
-#                 # use the product name as keyword
-#                 keyword = get_item_name_bestbuy(item_res)
+                # use the product name as keyword
+                keyword = get_item_name_bestbuy(item_res)
 
-#                 # get bestbuy average price of products from the search results
-#                 # of the keyword
-#                 keyword_res_amazon = fetch_keyword_amazon(keyword)
-#                 amazon_price = get_keyword_avg_price_amazon(
-#                     keyword_res_amazon, keyword
-#                 )
+                # get bestbuy average price of products from the search results
+                # of the keyword
+                keyword_res_amazon = fetch_keyword_amazon(keyword)
+                amazon_price = get_keyword_avg_price_amazon(
+                    keyword_res_amazon, keyword
+                )
 
-#         if amazon_price is None and bestbuy_price is None:
-#             return None
+        if amazon_price is None and bestbuy_price is None:
+            return None
 
-#         timestamp = str(datetime.utcnow())
+        timestamp = str(datetime.utcnow())
 
-#         result['amazon_price'] = amazon_price
-#         result['bestbuy_price'] = bestbuy_price
-#         result['timestamp'] = timestamp
+        result['amazon_price'] = amazon_price
+        result['bestbuy_price'] = bestbuy_price
+        result['timestamp'] = timestamp
 
-#         return result
+        return result
 
-#     except Exception as e:
-#         print(e)
-#         traceback.print_exc()
-#         return None
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return None
 
 
 # log product prices
@@ -416,6 +419,9 @@ def log_product_prices():
             elif 'bestbuy' in url:
                 item_res = fetch_item_bestbuy(item_id)
                 price = get_item_price_bestbuy(item_res)
+
+            print("price")
+            print(price)
 
             # if price is None, log nothing
             if price is None:
@@ -471,9 +477,12 @@ def log_keyword_prices():
             # fetch keyword average price from amazon and bestbuy
             amazon_keyword_res = fetch_keyword_amazon(keyword)
             amazon_price = get_keyword_avg_price_amazon(amazon_keyword_res)
-
+            print("amazon_price")
+            print(amazon_price)
             bestbuy_keyword_res = fetch_keyword_bestbuy(keyword)
             bestbuy_price = get_keyword_avg_price_bestbuy(bestbuy_keyword_res)
+            print("bestbuy_price")
+            print(bestbuy_price)
 
             # format today's date
             today = str(date.today()).replace('-', '/')
@@ -507,7 +516,7 @@ def log_keyword_prices():
 
 if __name__ == '__main__':
     # Nintendo Switch (Grey)
-    sample_amazon_item_id = "B09KMXCPKP"
+    sample_amazon_item_id = "B08SR7YK5D"
     # Nintendo - Switch - Animal Crossing: New Horizons Edition 32GB Console
     # - Multi
     sample_best_buy_item_id = "6401728"

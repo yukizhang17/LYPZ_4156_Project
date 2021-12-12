@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
 from application_services.user_services import validate_token, \
@@ -194,7 +193,7 @@ def unsubscribe():
     #  print("respond", respond)
     return jsonify({"reason": respond[1], "status_code": respond[0]})
 
-@app.route('/query-select', methods=['GET', 'POST'])
+@app.route('/query-select', methods=['GET'])
 def query_select():
     form = request.form
     if not validate_all_api_form_fields(
