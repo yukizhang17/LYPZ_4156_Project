@@ -232,7 +232,6 @@ def track_record_keyword(num_record, price_history_dic):
     min_price_bestbuy, max_price_bestbuy, avg_price_bestbuy = None, None, None
 
     sub_list = price_history_dic[-num_record:]
-    # print("sub_list", sub_list)
     interval = " (" + sub_list[0][1] + " - " + sub_list[-1][1] + ") "
     # seperate data to two lists
     amazon_list = []
@@ -250,7 +249,6 @@ def track_record_keyword(num_record, price_history_dic):
         if bestbuy_list[length_list][2] == NO_PRICE_LOG:
             bestbuy_list.remove(bestbuy_list[length_list])
         length_list -= 1
-    # print("....................", amazon_list)
     if len(amazon_list) == 0:
         min_price_amazon = NO_PRICE_LOG
         max_price_amazon = NO_PRICE_LOG
@@ -273,7 +271,6 @@ def track_record_keyword(num_record, price_history_dic):
         avg_price_bestbuy = \
             sum(n for _, _, n in bestbuy_list)/len(bestbuy_list)
         avg_price_bestbuy = round(avg_price_bestbuy, 2)
-        # print("avg_price_bestbuy", round(avg_price_bestbuy,2))
 
     return min_price_amazon, max_price_amazon, avg_price_amazon, \
         min_price_bestbuy, max_price_bestbuy, avg_price_bestbuy, interval
@@ -286,7 +283,6 @@ def find_min_max_avg_price_product(price_history, notification):
     price_history_dic = []
     for item in price_history_list:
         key, val = item.split("-", 1)
-        # print(key, val)
         if val != "None":
             val = float(val)
         else:
@@ -302,7 +298,6 @@ def find_min_max_avg_price_product(price_history, notification):
     elif notification == "weekly":
         week_list = price_history_dic[-7:]
         interval = " (" + week_list[0][0] + " - " + week_list[6][0] + ") "
-        # print("week_list", week_list)
 
         length_list = len(week_list) - 1
         while length_list >= 0:
@@ -310,7 +305,6 @@ def find_min_max_avg_price_product(price_history, notification):
                 week_list.remove(week_list[length_list])
             length_list -= 1
 
-        # print("week_list???", week_list)
         if len(week_list) == 0:
             min_price = NO_PRICE_LOG
             max_price = NO_PRICE_LOG
@@ -331,7 +325,6 @@ def find_min_max_avg_price_product(price_history, notification):
         else:
             month -= 1
         number_of_day = calendar.monthrange(year, month)[1]
-        # print(calendar.monthrange(year, month)[1])
         month_list = price_history_dic[-number_of_day:]
         interval = " (" + month_list[0][0] + " - " + month_list[-1][0] + ") "
 
@@ -389,17 +382,13 @@ def get_date(monthly_list, daily_list, weekly_list):
     # Monday is 0 and Sunday is 6
     week = datetime.datetime.today().weekday()
     day = datetime.datetime.today().day
-    response = None
     if week == 0:
-        response = collect_data("weekly", weekly_list)
+        collect_data("weekly", weekly_list)
     if day == 1:
-        response = collect_data("monthly", monthly_list)
+        collect_data("monthly", monthly_list)
 
-    # for unit test
-    # collect_data("weekly", weekly_list)
-    # collect_data("monthly", monthly_list)
-    response = collect_data("daily", daily_list)
-    return response
+    collect_data("daily", daily_list)
+    return "success"
 
 
 # lambda function
@@ -414,8 +403,3 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps("hello")
     }
-
-# for testing purpuse
-# user_info = get_all_users()
-# monthly_list, daily_list, weekly_list = get_notification_interval(user_info)
-# get_date(monthly_list, daily_list, weekly_list)

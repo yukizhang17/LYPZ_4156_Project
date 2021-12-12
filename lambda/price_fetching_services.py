@@ -13,22 +13,6 @@ service_args = [
     '--ignore-ssl-errors=true',
 ]
 
-# local host config
-# PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-# driver = webdriver.PhantomJS(
-#     executable_path=PANTHOMJS_PATH, 
-#     service_args=service_args,
-#     service_log_path=os.path.devnull
-# )
-
-# aws lambda config
-# PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
-# driver = webdriver.PhantomJS(
-#     executable_path=PANTHOMJS_PATH, 
-#     service_args=service_args,
-#     service_log_path=os.path.devnull
-# )
-
 # github CI config
 PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
@@ -124,7 +108,6 @@ def fetch_item_bestbuy(item_id):
             "Accept": "*/*",
             "Connection": "close",
         }
-        # print(url)
         response = requests.get(url, headers=headers)
         return response
     except Exception as e:
@@ -138,13 +121,12 @@ def fetch_keyword_bestbuy(keyword):
     try:
         keyword = '+'.join(keyword.split(' '))
         url = BESTBUY_DOMAIN + "/searchpage.jsp?st={}".format(keyword)
-        # print(url)
         headers = {
-			"User-Agent": "PostmanRuntime/7.28.4", 
-			"Accept-Encoding": "gzip, deflate, br", 
-			"Accept": "*/*", 
-			"Connection": "close", 
-		}
+            "User-Agent": "PostmanRuntime/7.28.4",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept": "*/*",
+            "Connection": "close",
+        }
         response = requests.get(url, headers=headers)
 
         return response
@@ -388,7 +370,7 @@ def log_product_prices():
         'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
         'table': 'subscription_product_id'
     }
-    
+
     # get subscribed product ids from db
     res = requests.get(DB_SELECT_URL, data=form)
     subscribed_items = res.json()
@@ -420,7 +402,7 @@ def log_product_prices():
             # if price is None, log nothing
             if price is None:
                 price = 'None'
-            
+
             # format today's date
             today = str(date.today()).replace('-', '/')
 
@@ -442,17 +424,18 @@ def log_product_prices():
             print(e)
             traceback.print_exc()
             return count
-    
+
     return count
+
 
 # log keyword prices
 def log_keyword_prices():
-    
+
     form = {
         'access_token': 'NizHtF)sqL*{#[Cc#sp30um!Kt6pu!',
         'table': 'subscription_keyword'
     }
-    
+
     # get subscribed keywords from db
     res = requests.get(DB_SELECT_URL, data=form)
     subscribed_keywords = res.json()
@@ -505,8 +488,9 @@ def log_keyword_prices():
             print(e)
             traceback.print_exc()
             return count
-    
+
     return count
+
 
 if __name__ == '__main__':
     # Nintendo Switch (Grey)
