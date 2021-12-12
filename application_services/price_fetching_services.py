@@ -14,12 +14,12 @@ service_args = [
 ]
 
 # local host config
-# PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
-# driver = webdriver.PhantomJS(
-#     executable_path=PANTHOMJS_PATH, 
-#     service_args=service_args,
-#     service_log_path=os.path.devnull
-# )
+PANTHOMJS_PATH = 'C://software//phantomjs-2.1.1-windows//bin//phantomjs.exe'
+driver = webdriver.PhantomJS(
+    executable_path=PANTHOMJS_PATH, 
+    service_args=service_args,
+    service_log_path=os.path.devnull
+)
 
 # aws lambda config
 # PANTHOMJS_PATH = '/opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
@@ -30,11 +30,12 @@ service_args = [
 # )
 
 # github CI config
-PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
-driver = webdriver.PhantomJS(
-    executable_path=PANTHOMJS_PATH,
-    service_log_path=os.path.devnull
-)
+# PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
+# driver = webdriver.PhantomJS(
+#     executable_path=PANTHOMJS_PATH,
+#     service_args=service_args,
+#     service_log_path=os.path.devnull
+# )
 
 
 AMAZON_DOMAIN = "https://www.amazon.com"
