@@ -29,7 +29,7 @@ class Test_TestUserServices(unittest.TestCase):
 
         form["user"] = "4156"
         self.assertTrue(validate_all_api_form_fields(requirement, form))
-        
+
         # Testcase 6:
     def test_check_email(self):
         self.assertFalse(valid_email(""))
@@ -60,14 +60,11 @@ class Test_TestUserServices(unittest.TestCase):
 
         api_key = "6f074b5f90a147e78988ca4ee373191f"
 
-        
-
         self.assertTrue("_id" in signup_request(
             application_email,
             application_password,
             api_key).json()
             )
-
 
     # Testcase 3:
     def test_login_request(self):
@@ -114,9 +111,6 @@ class Test_TestUserServices(unittest.TestCase):
 
         self.assertTrue(get_user_id(access_token) == id)
         self.assertFalse(get_user_id(access_token[0:-1]))
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
