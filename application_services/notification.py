@@ -87,22 +87,22 @@ def get_user_subscription(uid):
     return user_pid_list, user_keyword_list
 
 
-# send email to user
-def send_simple_message2(email, interval, product_detail, keyword_detail):
-    return requests.post(
-        "https://api.mailgun.net/v3/" +
-        "sandbox006a3337d58741a284f88f43225491f5.mailgun.org/messages",
-        auth=("api", "2d97cef5139d7e80d3cfd58d38bddae7-7b8c9ba8-e7f628ce"),
-        data={
-            "from": "LYPZ <postmaster" +
-            "@sandbox006a3337d58741a284f88f43225491f5.mailgun.org>",
-            "to": email, "subject": "Subscription Report - LYPZ API",
-            "template": "test1",
-            "h:X-Mailgun-Variables": json.dumps({
-                "email": email, "interval": interval,
-                "product_detail": product_detail,
-                "keyword_detail": keyword_detail})
-            })
+# # send email to user
+# def send_simple_message2(email, interval, product_detail, keyword_detail):
+#     return requests.post(
+#         "https://api.mailgun.net/v3/" +
+#         "sandbox006a3337d58741a284f88f43225491f5.mailgun.org/messages",
+#         auth=("api", "2d97cef5139d7e80d3cfd58d38bddae7-7b8c9ba8-e7f628ce"),
+#         data={
+#             "from": "LYPZ <postmaster" +
+#             "@sandbox006a3337d58741a284f88f43225491f5.mailgun.org>",
+#             "to": email, "subject": "Subscription Report - LYPZ API",
+#             "template": "test1",
+#             "h:X-Mailgun-Variables": json.dumps({
+#                 "email": email, "interval": interval,
+#                 "product_detail": product_detail,
+#                 "keyword_detail": keyword_detail})
+#             })
 
 
 # generate email content
@@ -407,11 +407,11 @@ def collect_data(notification_interval, notification_list):
         #     notification_interval, product_detail, keyword_detail)
 
         # for unit test
-        response = send_simple_message2(
-            "xyan830@gmail.com",
-            notification_interval, product_detail, keyword_detail)
+        # response = send_simple_message2(
+        #     "xyan830@gmail.com",
+        #     notification_interval, product_detail, keyword_detail)
 
-    return response
+    return "success"
 
 
 # get current date, decide which mailing list to call
