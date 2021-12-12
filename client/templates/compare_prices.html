@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LYPZ</title>
+    </head>
+<body>
+    <h2>Compare using keyword or product ID & platform</h2>
+    <form action="/price-compare" method="post">
+        <input type="hidden" id="access_token" name="access_token" value= "{{user.accesstoken}}"><br>
+        <label>Keyword:</label><br>
+        <input type="text" id="keyword" name="keyword" value=""> <br>
+        <label>Product ID:</label><br>
+        <input type="text" id="item_id" name="item_id" value=""> <br>
+        <label>Platform:</label><br>
+        <input type="text" id="platform" name="platform" value=""> <br>
+        <input id="compare_submit_button_1" type="submit" value="Compare" ><br><br><br>
+    </form>
+
+    <p> Response: <span id = "display_message">{{response_json}}</span> </p>
+
+
+</body>
+</html>

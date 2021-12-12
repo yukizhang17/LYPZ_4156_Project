@@ -320,14 +320,14 @@ def update_email_preference():
 def compare():
     # compare realtime amazon and bestbuy prices for keyword or item id
     form = request.form
-    if not validate_all_api_form_fields(["token"], form):
+    if not validate_all_api_form_fields(["access_token"], form):
         return jsonify(
             {
                 "reason": "missing required fields",
                 "status_code": 400
             }
         )
-    validation_res = validate_token(form["token"])
+    validation_res = validate_token(form["access_token"])
     if 'email' not in validation_res:
         return jsonify(validation_res)
 

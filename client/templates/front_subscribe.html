@@ -13,8 +13,8 @@
                 display_message2.innerHTML= "status_code: "+ status_code + "    reason: " + reason;
             }
             $(document).ready(function() { 
-                // web = 'http://127.0.0.1:5000'
-                web = 'https://whispering-peak-99211.herokuapp.com/'
+                web = 'http://127.0.0.1:5000'
+                // web = 'https://whispering-peak-99211.herokuapp.com/'
                 $('#form1')
                     .ajaxForm({
                         method: "POST",
@@ -53,7 +53,7 @@
         <label for="productID">productID</label><br>
         <input type="radio" id="type" name="type" value="keyword">
         <label for="keyword">keyword</label><br>
-        
+
         <label>Platform:</label><br>
         <input type="text" id="platform" name="platform" value="BestBuy or Amazon"><br>
         <label>Expected Price:</label><br>
