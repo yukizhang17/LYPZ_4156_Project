@@ -13,8 +13,8 @@
                 display_message2.innerHTML= "status_code: "+ status_code + "    reason: " + reason;
             }
             $(document).ready(function() { 
-                web = 'http://127.0.0.1:5000'
-                // web = 'https://whispering-peak-99211.herokuapp.com/'
+                // web = 'http://127.0.0.1:5000'
+                web = 'https://whispering-peak-99211.herokuapp.com/'
                 $('#form1')
                     .ajaxForm({
                         method: "POST",
@@ -41,14 +41,21 @@
         </script> 
     </head>
 <body>
+    <h3 id = "status">{{user.login_status}}</h3>
+
     <h2>Subscribe</h2>
     <form id="form1" method = "POST">
-        <label>User Access Token:</label><br>
-        <input type="text" id="access_token" name="access_token" value="Your user access token" ><br>
+        <input type="hidden" id="access_token" name="access_token" value= "{{user.accesstoken}}"><br>
         <label>Subscribe Item:</label><br>
         <input type="text" id="product" name="product" value="Product ID or Keyword"> <br>
         <label>Subscribe Type:</label><br>
-        <input type="text" id="type" name="type" value="productID or keyword"><br>
+        <input type="radio" id="type" name="type" value="productID">
+        <label for="productID">productID</label><br>
+        <input type="radio" id="type" name="type" value="keyword">
+        <label for="keyword">keyword</label><br>
+        
+        <label>Platform:</label><br>
+        <input type="text" id="platform" name="platform" value="BestBuy or Amazon"><br>
         <label>Expected Price:</label><br>
         <input type="text" id="expected_price" name="expected_price" value="Can be null"><br><br><br>
         <input id="subscribe_submit_button" type="submit" value="Subscribe" ><br><br><br>
@@ -58,19 +65,37 @@
 
     <h2>Unsubscribe</h2>
     <form id="form2" method = "POST">
-        <label>User Access Token:</label><br>
-        <input type="text" id="access_token2" name="access_token" value="Your user access token" ><br>
+        <input type="hidden" id="access_token2" name="access_token" value="{{user.accesstoken}}" ><br>
         <label>Subscribe Item:</label><br>
         <input type="text" id="product2" name="product" value="Product ID or Keyword"> <br>
         <label>Subscribe Type:</label><br>
         <input type="text" id="type2" name="type" value="productID or keyword"><br>
-        <label>Expected Price:</label><br>
-        <input type="text" id="expected_price2" name="expected_price" value="Can be null"><br><br><br>
+        <label>Platform:</label><br>
+        <input type="text" id="platform" name="platform" value="BestBuy or Amazon"><br><br><br>
         <input id="unsubscribe_submit_button" type="submit" value="Unsubscribe" ><br><br><br>
     </form>
 
     <p> Response: <span id = "display_message2"></span> </p>
 
+    <h2>All Subscriptions</h2>
+    <form id="form3" action="/subscription" method="post">
+        <input type="hidden" id="uid" name="uid" value="{{user.uid}}" ><br>
+        <input type="submit" value="Show">
+    </form>
+
+    <label>Subscribed Keywords:</label><br>
+    <ul>
+        {% for content_item in user.keyword %}
+        <li>{{content_item}}</li>
+        {% endfor %}
+    </ul>
+
+    <label>Subscribed Products:</label><br>
+    <ul>
+        {% for content_item in user.product_id %}
+        <li>{{content_item}}</li>
+        {% endfor %}
+    </ul>
 
 </body>
 </html>

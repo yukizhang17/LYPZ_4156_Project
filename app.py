@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 from database_services.sql_service import SqliteService
 from application_services.user_services import validate_token, \
@@ -69,6 +68,7 @@ def generate_apikey():
         # If already signup, return error
         response = signup_request(email, password).json()
         if "statusCode" in response and response["statusCode"] == 400:
+            response["status_code"] = response["statusCode"]
             return jsonify(response)
 
         # generate api_key
@@ -195,7 +195,7 @@ def unsubscribe():
     #  print("respond", respond)
     return jsonify({"reason": respond[1], "status_code": respond[0]})
 
-@app.route('/query-select', methods=['GET', 'POST'])
+@app.route('/query-select', methods=['GET'])
 def query_select():
     form = request.form
     if not validate_all_api_form_fields(
