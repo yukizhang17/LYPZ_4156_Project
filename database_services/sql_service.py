@@ -1,7 +1,3 @@
-# import pymysql
-# import json
-# import logging
-# from flask import g
 import sqlite3
 import os
 
@@ -15,7 +11,7 @@ DATABASE = db_path
 class SqliteService:
 
     @classmethod
-    def get_db(self):
+    def get_db(cls):
         conn = None
         try:
             conn = sqlite3.connect(DATABASE)
@@ -25,8 +21,8 @@ class SqliteService:
         return conn
 
     @classmethod
-    def run_sql(self, sql_statement, args, fetch=False):
-        connection = self.get_db()
+    def run_sql(cls, sql_statement, args, fetch=False):
+        connection = cls.get_db()
         try:
             cur = connection.execute(sql_statement, args)
             connection.commit()
@@ -41,7 +37,7 @@ class SqliteService:
             connection.close()
 
     @classmethod
-    def get_where_clause_args(self, template):
+    def get_where_clause_args(cls, template):
 
         terms = []
         args = []
@@ -60,15 +56,15 @@ class SqliteService:
         return clause, args
 
     @classmethod
-    def select(self, table_name, template={}):
-        wc, args = self.get_where_clause_args(template)
+    def select(cls, table_name, template={}):
+        wc, args = cls.get_where_clause_args(template)
 
         query = "SELECT * FROM " + table_name + " " + wc
 
-        return self.run_sql(query, args, True)
+        return cls.run_sql(query, args, True)
 
     @classmethod
-    def insert(self, table_name, insert_data):
+    def insert(cls, table_name, insert_data):
 
         cols = []
         vals = []
@@ -88,14 +84,14 @@ class SqliteService:
         print(query)
         print(args)
 
-        res = self.run_sql(query, args)
+        res = cls.run_sql(query, args)
 
         return res
 
     @classmethod
-    def update(self, table_name, update_data, template):
+    def update(cls, table_name, update_data, template):
 
-        wc, wc_args = self.get_where_clause_args(template)
+        wc, wc_args = cls.get_where_clause_args(template)
 
         cols = []
         # vals = []
@@ -103,7 +99,6 @@ class SqliteService:
 
         for k, v in update_data.items():
             cols.append(k + '=?')
-            # vals.append('%s')
             args.append(v)
 
         cols_clause = ",".join(cols)
@@ -112,23 +107,23 @@ class SqliteService:
 
         args.extend(wc_args)
 
-        res = self.run_sql(query, args)
+        res = cls.run_sql(query, args)
 
         return res
 
     @classmethod
-    def delete(self, table_name, template):
-        wc, args = self.get_where_clause_args(template)
+    def delete(cls, table_name, template):
+        wc, args = cls.get_where_clause_args(template)
 
         query = "DELETE FROM " + table_name + " " + wc
 
-        res = self.run_sql(query, args)
+        res = cls.run_sql(query, args)
 
         return res
 
     @classmethod
     def find_in_condition(
-        self, table_name, select_vars, in_variable, in_values
+        cls, table_name, select_vars, in_variable, in_values
     ):
 
         select_clause = "*"
@@ -142,6 +137,6 @@ class SqliteService:
             table_name + " WHERE " + \
             in_variable + " in (" + in_values_clause + ")"
 
-        res = self.run_sql(query)
+        res = cls.run_sql(query)
 
         return res
