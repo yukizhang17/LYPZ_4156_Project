@@ -311,7 +311,7 @@ def update_email_preference():
          {"uid":uid}
     )
 
-    return jsonify(rst)
+    return jsonify({"status_code": 200})
 
 
 if __name__ == '__main__':
