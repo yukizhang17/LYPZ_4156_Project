@@ -3,7 +3,7 @@ import requests
 import datetime
 import calendar
 
-# for unit test
+# for unit test test
 # web = 'http://127.0.0.1:5000/'
 web = 'https://whispering-peak-99211.herokuapp.com/'
 access_token = "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!"
@@ -85,24 +85,6 @@ def get_user_subscription(uid):
     user_keyword_list = json.loads(response_keyword.content)
 
     return user_pid_list, user_keyword_list
-
-
-# # send email to user
-# def send_simple_message2(email, interval, product_detail, keyword_detail):
-#     return requests.post(
-#         "https://api.mailgun.net/v3/" +
-#         "sandbox006a3337d58741a284f88f43225491f5.mailgun.org/messages",
-#         auth=("api", "2d97cef5139d7e80d3cfd58d38bddae7-7b8c9ba8-e7f628ce"),
-#         data={
-#             "from": "LYPZ <postmaster" +
-#             "@sandbox006a3337d58741a284f88f43225491f5.mailgun.org>",
-#             "to": email, "subject": "Subscription Report - LYPZ API",
-#             "template": "test1",
-#             "h:X-Mailgun-Variables": json.dumps({
-#                 "email": email, "interval": interval,
-#                 "product_detail": product_detail,
-#                 "keyword_detail": keyword_detail})
-#             })
 
 
 # generate email content
@@ -279,7 +261,7 @@ def track_record_keyword(num_record, price_history_dic):
         max_price_amazon = max(amazon_list, key=lambda x: x[2])[2]
 
         avg_price_amazon = sum(n for _, _, n in amazon_list)/len(amazon_list)
-
+        avg_price_amazon = round(avg_price_amazon, 2)
     # bestbuy list
     if len(bestbuy_list) == 0:
         min_price_bestbuy = "No price logged"
@@ -291,7 +273,7 @@ def track_record_keyword(num_record, price_history_dic):
 
         avg_price_bestbuy = \
             sum(n for _, _, n in bestbuy_list)/len(bestbuy_list)
-
+        avg_price_bestbuy = round(avg_price_bestbuy, 2)
         # print("avg_price_bestbuy", round(avg_price_bestbuy,2))
 
     return min_price_amazon, max_price_amazon, avg_price_amazon, \
@@ -339,7 +321,7 @@ def find_min_max_avg_price_product(price_history, notification):
             max_price = max(week_list, key=lambda x: x[1])[1]
 
             avg_price = sum(n for _, n in week_list)/len(week_list)
-
+            avg_price = round(avg_price, 2)
     elif notification == "monthly":
         # calculate number of date need to count
         month = datetime.datetime.today().month
@@ -369,7 +351,7 @@ def find_min_max_avg_price_product(price_history, notification):
             max_price = max(month_list, key=lambda x: x[1])[1]
 
             avg_price = sum(n for _, n in month_list)/len(month_list)
-
+            avg_price = round(avg_price, 2)
     return min_price, max_price, avg_price, interval
 
 

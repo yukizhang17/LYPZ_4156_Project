@@ -305,12 +305,12 @@ def update_email_preference():
            "reason": "invalid interval",
            "status_code": 400})
 
-    rst = SqliteService.update
-    (
+    rst = SqliteService.update(
          "user",
          {"notification_interval":form["notification_interval"]},
          {"uid":uid}
     )
+
     return jsonify(rst)
 
 
