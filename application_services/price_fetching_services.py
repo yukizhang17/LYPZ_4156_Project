@@ -55,6 +55,8 @@ DB_URL = "https://whispering-peak-99211.herokuapp.com/"
 DB_SELECT_URL = DB_URL + 'query-select'
 DB_UPDATE_URL = DB_URL + 'query-update'
 
+PARSER = 'html.parser'
+
 
 # check if at least one list of fields are included in the api form
 def validate_optional_api_form_fields(field_lists, form):
@@ -145,8 +147,7 @@ def fetch_keyword_bestbuy(keyword):
 			"Connection": "close", 
 		}
         response = requests.get(url, headers=headers)
-        
-        # driver.get(url)
+
         # response = driver.page_source
 
         return response
@@ -160,7 +161,7 @@ def fetch_keyword_bestbuy(keyword):
 def get_item_price_amazon(response):
     try:
         content = response
-        soup = BeautifulSoup(content, 'html.parser')
+        soup = BeautifulSoup(content, PARSER)
         info = soup.find('div', {'class': 'cardRoot'})
 
         if info is None:
@@ -180,7 +181,7 @@ def get_item_price_amazon(response):
 def get_item_name_amazon(response):
     try:
         content = response
-        soup = BeautifulSoup(content, 'html.parser')
+        soup = BeautifulSoup(content, PARSER)
         title_span = soup.find('span', {'id': 'productTitle'})
 
         if title_span is None:
@@ -200,11 +201,10 @@ def get_item_name_amazon(response):
 def get_keyword_avg_price_amazon(response, keyword=None):
     try:
         content = response
-        soup = BeautifulSoup(content, 'html.parser')
+        soup = BeautifulSoup(content, PARSER)
         search_results = soup.select('div.s-result-item.s-asin')
         prices = []
         for i, item_div in enumerate(search_results):
-            # item_id = item_div['data-asin']
 
             if keyword is not None:
                 name_span = item_div.find(
@@ -275,13 +275,11 @@ def get_item_name_bestbuy(response):
 def get_keyword_avg_price_bestbuy(response, keyword=None):
     try:
         content = response.content
-        #content = response
-        soup = BeautifulSoup(content, 'html.parser')
+        soup = BeautifulSoup(content, PARSER)
         search_results = soup.select('li.sku-item')
 
         prices = []
         for i, item_li in enumerate(search_results):
-            # item_id = item_li['data-sku-id']
 
             if keyword is not None:
                 header_h4 = item_li.find('h4', class_='sku-header')

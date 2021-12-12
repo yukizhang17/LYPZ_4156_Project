@@ -1,6 +1,8 @@
 from uuid import uuid4
 from database_services.sql_service import SqliteService
 
+SUCCESS = "Subscribed successfully!"
+
 
 def get_subscribe_input(form):
     product = form["product"]
@@ -75,7 +77,7 @@ def insert_frist_time(product, uid, expected_price, type, website):
             "uid": uid, "sid": sid, "expected_price": expected_price})
 
     if respond1 is None and respond2 is None:
-        return (200, "Subscribed successfully!")
+        return (200, SUCCESS)
     else:
         return (400, "Failed Insert product ID to db!")
 
@@ -86,8 +88,8 @@ def insert_by_keyword(uid, keyword, expected_price):
     if len(keyword) > 128:
         return (400, "Max keyword length is 128")
 
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
+    sqlite_connection = SqliteService.get_db()
+    cursor = sqlite_connection.cursor()
 
     sql = """ SELECT sid, keyword
     FROM subscription_keyword
@@ -116,7 +118,7 @@ def insert_by_keyword(uid, keyword, expected_price):
         if not sub_record:  # no subscribe this keyword before
             SqliteService.insert("user_subcription_keyword", {
                 "sid": sid, "uid": uid, "expected_price": expected_price})
-            return (200, "Subscribed successfully!")
+            return (200, SUCCESS)
 
         elif sub_record[0][0] and sub_record[0][1] != expected_price:
             # user sub before, now calling with different expected_price
@@ -135,8 +137,8 @@ def insert_by_keyword(uid, keyword, expected_price):
 
 
 def insert_by_productID(uid, productID, website, expected_price):
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
+    sqlite_connection = SqliteService.get_db()
+    cursor = sqlite_connection.cursor()
 
     sql = """ SELECT sid, website
     FROM subscription_product_id
@@ -165,7 +167,7 @@ def insert_by_productID(uid, productID, website, expected_price):
             SqliteService.insert("user_subcription_product_id", {
                 "uid": uid, "sid": sid, "expected_price": expected_price})
 
-            return (200, "Subscribed successfully!")
+            return (200, SUCCESS)
 
         elif sub_record[0][0] and sub_record[0][1] != expected_price:
             # user sub before, now calling with different expected_price
@@ -221,8 +223,8 @@ def delete_by_keyword(uid, keyword):
     if len(keyword) > 128:
         return (400, "Max keyword length is 128")
 
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
+    sqlite_connection = SqliteService.get_db()
+    cursor = sqlite_connection.cursor()
 
     sql = """ SELECT sid, keyword
     FROM subscription_keyword
@@ -255,8 +257,8 @@ def delete_by_keyword(uid, keyword):
 
 
 def delete_record(sid, uid, type):
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
+    sqlite_connection = SqliteService.get_db()
+    cursor = sqlite_connection.cursor()
 
     if type == "keyword":
         user_sub_table = "user_subcription_keyword"
@@ -279,8 +281,8 @@ def delete_record(sid, uid, type):
 
 
 def delete_by_productID(uid, productID, website):
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
+    sqlite_connection = SqliteService.get_db()
+    cursor = sqlite_connection.cursor()
 
     sql = """ SELECT sid, website
     FROM subscription_product_id
@@ -341,8 +343,8 @@ def generate_website(platform, product):
 def generate_sid():
     sid = str(uuid4())
 
-    sqliteConnection = SqliteService.get_db()
-    cursor = sqliteConnection.cursor()
+    sqlite_connection = SqliteService.get_db()
+    cursor = sqlite_connection.cursor()
 
     cursor.execute(
         'SELECT COUNT(sid) FROM subscription_keyword WHERE sid = "'

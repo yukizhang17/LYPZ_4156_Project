@@ -19,6 +19,9 @@ CORS(app)
 
 API = 'https://4156_LYPZ/api'
 DB = 'Username-Password-Authentication'
+MISSING = "missing required fields"
+DENIED = "access denied"
+DEV_TOKEN = "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!"
 
 
 @app.route('/', methods=["GET"])
@@ -33,7 +36,7 @@ def generate_apikey():
     form = request.form
     if not validate_all_api_form_fields(["email", "password"], form):
         return jsonify({
-            "reason": "missing required fields", "status_code": 400})
+            "reason": MISSING, "status_code": 400})
 
     email = form['email']
     password = form['password']
@@ -77,7 +80,6 @@ def generate_apikey():
         return jsonify({
             "message": "token created, please verified your email ",
             "status_code": 200})
-        # return jsonify({"api_key": token, "status_code": 201})
 
 
 # user signup end point
@@ -88,7 +90,7 @@ def signup():
     if not validate_all_api_form_fields(
             ["email", "password", "api_key"], form):
         return jsonify({
-            "reason": "missing required fields", "status_code": 400})
+            "reason": MISSING, "status_code": 400})
 
     email = form["email"]
     password = form["password"]
@@ -116,7 +118,7 @@ def login():
     if not validate_all_api_form_fields(
             ["email", "password", "api_key"], form):
         return jsonify({
-            "reason": "missing required fields", "status_code": 400})
+            "reason": MISSING, "status_code": 400})
 
     username = form["email"] + "_apikey_" + form["api_key"]
     password = form["password"]
@@ -130,7 +132,7 @@ def userinfo():
     form = request.form
     if not validate_all_api_form_fields(["token"], form):
         return jsonify({
-            "reason": "missing required fields", "status_code": 400})
+            "reason": MISSING, "status_code": 400})
 
     return jsonify(validate_token(form["token"]))
 
@@ -141,7 +143,7 @@ def subscribe():
     if not validate_all_api_form_fields(
             ["access_token", "product", "type"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
 
     validation_res = validate_token(form["access_token"])
@@ -172,7 +174,7 @@ def unsubscribe():
     if not validate_all_api_form_fields(
             ["access_token", "product", "type"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
 
     validation_res = validate_token(form["access_token"])
@@ -199,11 +201,11 @@ def query_select():
     if not validate_all_api_form_fields(
         ["access_token", "table"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
-    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+    if form["access_token"] != DEV_TOKEN:
         return jsonify({
-            "reason": "access denied",
+            "reason": DENIED,
             "status_code": 400})
     where = {}
     for element in form:
@@ -221,11 +223,11 @@ def query_insert():
     if not validate_all_api_form_fields(
         ["access_token", "table"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
-    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+    if form["access_token"] != DEV_TOKEN:
         return jsonify({
-            "reason": "access denied",
+            "reason": DENIED,
             "status_code": 400})
     where = {}
     for element in form:
@@ -243,11 +245,11 @@ def query_delete():
     if not validate_all_api_form_fields(
         ["access_token", "table"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
-    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+    if form["access_token"] != DEV_TOKEN:
         return jsonify({
-            "reason": "access denied",
+            "reason": DENIED,
             "status_code": 400})
     where = {}
     for element in form:
@@ -265,11 +267,11 @@ def query_update():
     if not validate_all_api_form_fields(
         ["access_token", "table"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
-    if form["access_token"] != "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!":
+    if form["access_token"] != DEV_TOKEN:
         return jsonify({
-            "reason": "access denied",
+            "reason": DENIED,
             "status_code": 400})
     update = {}
     where = {}
@@ -291,7 +293,7 @@ def update_email_preference():
     if not validate_all_api_form_fields(
             ["access_token", "notification_interval"], form):
         return jsonify({
-            "reason": "missing required fields",
+            "reason": MISSING,
             "status_code": 400})
 
     validation_res = validate_token(form["access_token"])
@@ -305,7 +307,7 @@ def update_email_preference():
            "reason": "invalid interval",
            "status_code": 400})
 
-    rst = SqliteService.update(
+    SqliteService.update(
          "user",
          {"notification_interval":form["notification_interval"]},
          {"uid":uid}

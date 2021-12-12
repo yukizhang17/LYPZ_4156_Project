@@ -7,6 +7,10 @@ import calendar
 # web = 'http://127.0.0.1:5000/'
 web = 'https://whispering-peak-99211.herokuapp.com/'
 access_token = "NizHtF)sqL*{#[Cc#sp30um!Kt6pu!"
+LOWEST = " lowest price: "
+HIGHEST = ", highest price: "
+AVG = ", average price: "
+NO_PRICE_LOG = "No price logged"
 
 
 def get_all_users():
@@ -38,7 +42,6 @@ def get_notification_interval(user_info):
             weekly_list[i[0]] = {"email": i[1], "api_key": i[2]}
         elif i[3] == "monthly":
             monthly_list[i[0]] = {"email": i[1], "api_key": i[2]}
-    # print("monthly_list", monthly_list)
     return monthly_list, daily_list, weekly_list
 
 
@@ -46,7 +49,6 @@ def get_notification_interval(user_info):
 def get_price_history(sid_list, table, sub_info):
 
     for sid_record in sid_list:
-        # print("here", sid_record)
         dic_pid = {
             "access_token": access_token,
             "table": table,
@@ -101,8 +103,6 @@ def generate_email(user_pid_list, user_keyword_list, notification):
     # generate user's product subscription detail content
     for i in range(1, length_product):
         product_num += 1
-        # print(user_pid_list)
-        # print(user_pid_list[1][0])
         min_price, max_price, avg_price, interval = \
             find_min_max_avg_price_product(
                 user_pid_list[i][0][3], notification)
@@ -114,14 +114,14 @@ def generate_email(user_pid_list, user_keyword_list, notification):
             product_detail += "Yesterday's price: " + str(min_price) + ". \n"
         elif notification == "weekly":
             product_detail += "Last week's " + interval + \
-                " lowest price: " + str(min_price) + \
-                ", highest price: " + str(max_price) + \
-                ", average price: " + str(avg_price) + ". \n"
+                LOWEST + str(min_price) + \
+                HIGHEST + str(max_price) + \
+                AVG + str(avg_price) + ". \n"
         elif notification == "monthly":
             product_detail += "Last month's " + interval + \
-                " lowest price: " + str(min_price) + \
-                ", highest price: " + str(max_price) + \
-                ", average price: " + str(avg_price) + ". \n"
+                LOWEST + str(min_price) + \
+                HIGHEST + str(max_price) + \
+                AVG + str(avg_price) + ". \n"
 
     if product_detail == "":
         product_detail = "No product id subscribed."
@@ -129,8 +129,6 @@ def generate_email(user_pid_list, user_keyword_list, notification):
     # generate user's keyword subscription detail content
     for i in range(1, length_keyword):
         keyword_num += 1
-        # print(user_keyword_list)
-        # print(user_keyword_list[1][0])
         price_dic = find_min_max_avg_price_keyword(
             user_keyword_list[i][0][2], notification)
         keyword_detail += str(keyword_num) + ". Keyword: " + \
@@ -139,33 +137,34 @@ def generate_email(user_pid_list, user_keyword_list, notification):
         if notification == "daily":
             keyword_detail += "Yesterday's price: " + \
                 str(price_dic["min_price_amazon"]) + "."
-        elif notification == "weekly":
-            keyword_detail += "Last week's" + price_dic["interval"] + \
-                " lowest price: " + str(price_dic["min_price_amazon"]) + \
-                ", highest price: " + str(price_dic["max_price_amazon"]) + \
-                ", average price: " + str(price_dic["avg_price_amazon"]) + "."
-        elif notification == "monthly":
-            keyword_detail += "Last month's" + price_dic["interval"] + \
-                " lowest price: " + \
-                str(price_dic["min_price_amazon"]) + \
-                ", highest price: " + str(price_dic["max_price_amazon"]) + \
-                ", average price: " + str(price_dic["avg_price_amazon"]) + "."
 
-        if notification == "daily":
             keyword_detail += "on BestBuy, Yesterday's price: " + \
                 str(price_dic["min_price_bestbuy"]) + ". "
+
         elif notification == "weekly":
+            keyword_detail += "Last week's" + price_dic["interval"] + \
+                LOWEST + str(price_dic["min_price_amazon"]) + \
+                HIGHEST + str(price_dic["max_price_amazon"]) + \
+                AVG + str(price_dic["avg_price_amazon"]) + "."
+
             keyword_detail += "on BestBuy, Last week's" + \
                 price_dic["interval"] + \
-                " lowest price: " + str(price_dic["min_price_bestbuy"]) + \
-                ", highest price: " + str(price_dic["max_price_bestbuy"]) + \
-                ", average price: " + str(price_dic["avg_price_bestbuy"]) + "."
+                LOWEST + str(price_dic["min_price_bestbuy"]) + \
+                HIGHEST + str(price_dic["max_price_bestbuy"]) + \
+                AVG + str(price_dic["avg_price_bestbuy"]) + "."
+
         elif notification == "monthly":
+            keyword_detail += "Last month's" + price_dic["interval"] + \
+                LOWEST + \
+                str(price_dic["min_price_amazon"]) + \
+                HIGHEST + str(price_dic["max_price_amazon"]) + \
+                AVG + str(price_dic["avg_price_amazon"]) + "."
+
             keyword_detail += "on BestBuy, Last month's" + \
                 price_dic["interval"] + \
-                " lowest price: " + str(price_dic["min_price_bestbuy"]) + \
-                ", highest price: " + str(price_dic["max_price_bestbuy"]) + \
-                ", average price: " + str(price_dic["avg_price_bestbuy"]) + "."
+                LOWEST + str(price_dic["min_price_bestbuy"]) + \
+                HIGHEST + str(price_dic["max_price_bestbuy"]) + \
+                AVG + str(price_dic["avg_price_bestbuy"]) + "."
 
     if keyword_detail == "":
         keyword_detail = "No keyword subscribed."
@@ -183,7 +182,7 @@ def find_min_max_avg_price_keyword(price_history, notification):
         if price != "None":
             price = float(price)
         else:
-            price = "No price logged"
+            price = NO_PRICE_LOG
         price_history_dic.append([platform, date, price])
 
     if notification == "daily":
@@ -246,16 +245,16 @@ def track_record_keyword(num_record, price_history_dic):
     # amazon list
     length_list = len(amazon_list) - 1
     while length_list >= 0:
-        if amazon_list[length_list][2] == "No price logged":
+        if amazon_list[length_list][2] == NO_PRICE_LOG:
             amazon_list.remove(amazon_list[length_list])
-        if bestbuy_list[length_list][2] == "No price logged":
+        if bestbuy_list[length_list][2] == NO_PRICE_LOG:
             bestbuy_list.remove(bestbuy_list[length_list])
         length_list -= 1
     # print("....................", amazon_list)
     if len(amazon_list) == 0:
-        min_price_amazon = "No price logged"
-        max_price_amazon = "No price logged"
-        avg_price_amazon = "No price logged"
+        min_price_amazon = NO_PRICE_LOG
+        max_price_amazon = NO_PRICE_LOG
+        avg_price_amazon = NO_PRICE_LOG
     else:
         min_price_amazon = min(amazon_list, key=lambda x: x[2])[2]
         max_price_amazon = max(amazon_list, key=lambda x: x[2])[2]
@@ -264,9 +263,9 @@ def track_record_keyword(num_record, price_history_dic):
         avg_price_amazon = round(avg_price_amazon, 2)
     # bestbuy list
     if len(bestbuy_list) == 0:
-        min_price_bestbuy = "No price logged"
-        max_price_bestbuy = "No price logged"
-        avg_price_bestbuy = "No price logged"
+        min_price_bestbuy = NO_PRICE_LOG
+        max_price_bestbuy = NO_PRICE_LOG
+        avg_price_bestbuy = NO_PRICE_LOG
     else:
         min_price_bestbuy = min(bestbuy_list, key=lambda x: x[2])[2]
         max_price_bestbuy = max(bestbuy_list, key=lambda x: x[2])[2]
@@ -291,7 +290,7 @@ def find_min_max_avg_price_product(price_history, notification):
         if val != "None":
             val = float(val)
         else:
-            val = "No price logged"
+            val = NO_PRICE_LOG
         price_history_dic.append([key, val])
 
     min_price, max_price, avg_price, interval = None, None, None, ""
@@ -307,15 +306,15 @@ def find_min_max_avg_price_product(price_history, notification):
 
         length_list = len(week_list) - 1
         while length_list >= 0:
-            if week_list[length_list][1] == "No price logged":
+            if week_list[length_list][1] == NO_PRICE_LOG:
                 week_list.remove(week_list[length_list])
             length_list -= 1
 
         # print("week_list???", week_list)
         if len(week_list) == 0:
-            min_price = "No price logged"
-            max_price = "No price logged"
-            avg_price = "No price logged"
+            min_price = NO_PRICE_LOG
+            max_price = NO_PRICE_LOG
+            avg_price = NO_PRICE_LOG
         else:
             min_price = min(week_list, key=lambda x: x[1])[1]
             max_price = max(week_list, key=lambda x: x[1])[1]
@@ -338,14 +337,14 @@ def find_min_max_avg_price_product(price_history, notification):
 
         length_list = len(month_list) - 1
         while length_list >= 0:
-            if month_list[length_list][1] == "No price logged":
+            if month_list[length_list][1] == NO_PRICE_LOG:
                 month_list.remove(month_list[length_list])
             length_list -= 1
 
         if len(month_list) == 0:
-            min_price = "No price logged"
-            max_price = "No price logged"
-            avg_price = "No price logged"
+            min_price = NO_PRICE_LOG
+            max_price = NO_PRICE_LOG
+            avg_price = NO_PRICE_LOG
         else:
             min_price = min(month_list, key=lambda x: x[1])[1]
             max_price = max(month_list, key=lambda x: x[1])[1]
@@ -375,23 +374,12 @@ def collect_data(notification_interval, notification_list):
         # find record
         user_pid_list = get_price_history(
             user_pid_list, "subscription_product_id", product_sub_info)
-        # print("product_sub_info222", product_sub_info)
 
-        # print("user_pid_list222",user_pid_list)
         user_keyword_list = get_price_history(
             user_keyword_list, "subscription_keyword", keyword_sub_info)
 
         email, product_detail, keyword_detail = generate_email(
             user_pid_list, user_keyword_list, notification_interval)
-
-        # response = send_simple_message2(
-        #     email,
-        #     notification_interval, product_detail, keyword_detail)
-
-        # for unit test
-        # response = send_simple_message2(
-        #     "xyan830@gmail.com",
-        #     notification_interval, product_detail, keyword_detail)
 
     return "success"
 
@@ -401,7 +389,7 @@ def get_date(monthly_list, daily_list, weekly_list):
     # Monday is 0 and Sunday is 6
     week = datetime.datetime.today().weekday()
     day = datetime.datetime.today().day
-
+    response = None
     if week == 0:
         response = collect_data("weekly", weekly_list)
     if day == 1:

@@ -94,7 +94,6 @@ class SqliteService:
         wc, wc_args = cls.get_where_clause_args(template)
 
         cols = []
-        # vals = []
         args = []
 
         for k, v in update_data.items():
