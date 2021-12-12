@@ -33,7 +33,6 @@ service_args = [
 PANTHOMJS_PATH = '/usr/local/bin/phantomjs'
 driver = webdriver.PhantomJS(
     executable_path=PANTHOMJS_PATH,
-    service_args=service_args,
     service_log_path=os.path.devnull
 )
 
