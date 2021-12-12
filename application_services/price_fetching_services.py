@@ -320,70 +320,70 @@ def get_keyword_avg_price_bestbuy(response, keyword=None):
 
 
 # comare prices of a product or a keyword
-# def compare_prices(keyword, item_id=None, platform=None):
-#     try:
-#         result = {}
+def compare_prices(keyword, item_id=None, platform=None):
+    try:
+        result = {}
 
-#         # if the price of a keyword is to be compared
-#         if keyword is not None:
-#             # get amazon average price of products from the search results
-#             # of the keyword
-#             keyword_res_amazon = fetch_keyword_amazon(keyword)
-#             amazon_price = get_keyword_avg_price_amazon(keyword_res_amazon)
+        # if the price of a keyword is to be compared
+        if keyword is not None:
+            # get amazon average price of products from the search results
+            # of the keyword
+            keyword_res_amazon = fetch_keyword_amazon(keyword)
+            amazon_price = get_keyword_avg_price_amazon(keyword_res_amazon)
 
-#             # get bestbuy average price of products from the search results
-#             # of the keyword
-#             keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
-#             bestbuy_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
+            # get bestbuy average price of products from the search results
+            # of the keyword
+            keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
+            bestbuy_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
 
-#         # if the price of a product is to be compared
-#         if item_id is not None and platform is not None:
-#             # if the product to be compared is from amazon
-#             if platform == 'amazon':
-#                 # get amazon price of the product
-#                 item_res = fetch_item_amazon(item_id)
-#                 amazon_price = get_item_price_amazon(item_res)
+        # if the price of a product is to be compared
+        if item_id is not None and platform is not None:
+            # if the product to be compared is from amazon
+            if platform == 'amazon':
+                # get amazon price of the product
+                item_res = fetch_item_amazon(item_id)
+                amazon_price = get_item_price_amazon(item_res)
 
-#                 # use the product name as keyword
-#                 keyword = get_item_name_amazon(item_res)
+                # use the product name as keyword
+                keyword = get_item_name_amazon(item_res)
 
-#                 # get bestbuy average price of products from the search results
-#                 # of the keyword
-#                 keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
-#                 bestbuy_price = get_keyword_avg_price_bestbuy(
-#                     keyword_res_bestbuy, keyword
-#                 )
-#             # if the product to be compared is from bestbuy
-#             elif platform == 'bestbuy':
-#                 # get bestbuy price of the product
-#                 item_res = fetch_item_bestbuy(item_id)
-#                 bestbuy_price = get_item_price_bestbuy(item_res)
+                # get bestbuy average price of products from the search results
+                # of the keyword
+                keyword_res_bestbuy = fetch_keyword_bestbuy(keyword)
+                bestbuy_price = get_keyword_avg_price_bestbuy(
+                    keyword_res_bestbuy, keyword
+                )
+            # if the product to be compared is from bestbuy
+            elif platform == 'bestbuy':
+                # get bestbuy price of the product
+                item_res = fetch_item_bestbuy(item_id)
+                bestbuy_price = get_item_price_bestbuy(item_res)
 
-#                 # use the product name as keyword
-#                 keyword = get_item_name_bestbuy(item_res)
+                # use the product name as keyword
+                keyword = get_item_name_bestbuy(item_res)
 
-#                 # get bestbuy average price of products from the search results
-#                 # of the keyword
-#                 keyword_res_amazon = fetch_keyword_amazon(keyword)
-#                 amazon_price = get_keyword_avg_price_amazon(
-#                     keyword_res_amazon, keyword
-#                 )
+                # get bestbuy average price of products from the search results
+                # of the keyword
+                keyword_res_amazon = fetch_keyword_amazon(keyword)
+                amazon_price = get_keyword_avg_price_amazon(
+                    keyword_res_amazon, keyword
+                )
 
-#         if amazon_price is None and bestbuy_price is None:
-#             return None
+        if amazon_price is None and bestbuy_price is None:
+            return None
 
-#         timestamp = str(datetime.utcnow())
+        timestamp = str(datetime.utcnow())
 
-#         result['amazon_price'] = amazon_price
-#         result['bestbuy_price'] = bestbuy_price
-#         result['timestamp'] = timestamp
+        result['amazon_price'] = amazon_price
+        result['bestbuy_price'] = bestbuy_price
+        result['timestamp'] = timestamp
 
-#         return result
+        return result
 
-#     except Exception as e:
-#         print(e)
-#         traceback.print_exc()
-#         return None
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return None
 
 
 # log product prices
