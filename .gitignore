@@ -1,11 +1,5 @@
-db/
-db/**
-.DS_Store
-.DS_Store
-.DS_Store
 .DS_Store
 venv/
-*.db
 *.pyc
 __pycache__/
 instance/
