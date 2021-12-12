@@ -12,10 +12,15 @@ jobs:
         python-version: ["3.8"]
     steps:
     - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
           python -m pip install --upgrade pip
@@ -50,3 +55,15 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+    - name: Commit files
+      run: |
+        git config --local user.email "zp2188@columbia.edu"
+        git config --local user.name "github-actions"
+        git add *
+        git commit -m "Add flake8 report" -a
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
