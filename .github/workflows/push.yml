@@ -59,8 +59,8 @@ jobs:
       run: |
         git config --local user.email "zp2188@columbia.edu"
         git config --local user.name "github-actions"
-        git add *
-        git commit -m "Add flake8 report" -a
+        git add .
+        git commit -m "Add coverage report" -a
 
     - name: Push changes
       uses: ad-m/github-push-action@master
