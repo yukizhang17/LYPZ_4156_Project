@@ -515,7 +515,7 @@ def log_keyword_prices():
 
 if __name__ == '__main__':
     # Nintendo Switch (Grey)
-    sample_amazon_item_id = "B09KMXCPKP"
+    sample_amazon_item_id = "B08SR7YK5D"
     # Nintendo - Switch - Animal Crossing: New Horizons Edition 32GB Console
     # - Multi
     sample_best_buy_item_id = "6401728"
