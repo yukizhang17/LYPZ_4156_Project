@@ -11,7 +11,7 @@ try:
     from application_services.notification import get_notification_interval, \
         get_all_users, get_user_subscription, get_price_history, \
         find_min_max_avg_price_product, find_min_max_avg_price_keyword, \
-        send_simple_message2, collect_data, get_date
+        collect_data, get_date
     from database_services.sql_service import SqliteService
     #   subscribe_product, generate_website, unsubscribe_product,\
     #   get_unsubscribe_input
@@ -370,13 +370,13 @@ class Test_Testnotification(unittest.TestCase):
         self.assertEqual(return_dic["avg_price_bestbuy"], avg_price_bestbuy)
         self.assertEqual(return_dic["interval"], interval)
 
-# Test case : send email
-    def test_send_simple_message(self):
-        response = send_simple_message2(
-            "xyan830@gmail.com",
-            "daily", "product_detail", "keyword_detail")
+# # Test case : send email
+#     def test_send_simple_message(self):
+#         response = send_simple_message2(
+#             "xyan830@gmail.com",
+#             "daily", "product_detail", "keyword_detail")
 
-        self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response.status_code, 200)
 
 # Testcase : collect user's subscribed item's price status
     def test_collect_data(self):
@@ -392,7 +392,7 @@ class Test_Testnotification(unittest.TestCase):
 
             result = collect_data(notification_interval, notification_list)
             print(result)
-            self.assertEqual(result.status_code, 200)
+            self.assertEqual(result, "success")
 
 # Testcase 4: get current date and trigger corresponding mailing list
     def test_get_date(self):
@@ -400,4 +400,4 @@ class Test_Testnotification(unittest.TestCase):
         monthly_list, daily_list, weekly_list = \
             get_notification_interval(user_info)
         result = get_date(monthly_list, daily_list, weekly_list)
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result, "success")
