@@ -69,8 +69,8 @@ jobs:
         ls
         git config --local user.email "zp2188@columbia.edu"
         git config --local user.name "github-actions"
+        git restore db/LYPZ.db
         git add .
-        git rm -r --cached db
         git commit -m "Add coverage report" -a
 
     - name: Push changes
