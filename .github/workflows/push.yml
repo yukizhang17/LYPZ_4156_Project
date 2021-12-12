@@ -42,8 +42,6 @@ jobs:
         echo "::set-output name=RATE::$PERCENTAGE"
         echo "::set-output name=COLOR::$([ $PERCENTAGE -lt 85 ] && echo important || echo success)"
         echo "::set-output name=HASH_SHORT::$(git rev-parse --short HEAD)"
-        pwd
-        ls
         
     - name: Override Coverage Source Path for Sonar
       run: sed -i "s/\/home\/runner\/work\/LYPZ_4156_Project\/LYPZ_4156_Project\//\/unit_test\//g" test-coverage.xml
