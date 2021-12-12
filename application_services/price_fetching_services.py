@@ -247,10 +247,11 @@ def get_keyword_avg_price_amazon(response, keyword=None):
 def get_item_price_bestbuy(response):
     try:
         response_json = json.loads(response.content)
-        if 'onSale' in response_json and response_json['onSale'] is False:
-            price = response_json['regularPrice']
-        else:
+        price = None
+        if 'onSale' in response_json and response_json['onSale'] is True:
             price = response_json['salePrice']
+        elif 'regularPrice' in response_json:
+            price = response_json['regularPrice']
         return price
     except Exception as e:
         print(e)
