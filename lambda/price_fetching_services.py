@@ -147,8 +147,6 @@ def fetch_keyword_bestbuy(keyword):
 		}
         response = requests.get(url, headers=headers)
 
-        # response = driver.page_source
-
         return response
     except Exception as e:
         print(e)
@@ -232,7 +230,6 @@ def get_keyword_avg_price_amazon(response, keyword=None):
 
         if len(prices) == 0:
             return None
-        # print(prices)
         filtered_prices = reject_outliers(np.array(prices), 3)
         avg_price = round(np.mean(filtered_prices), 2)
         return avg_price
@@ -518,38 +515,3 @@ if __name__ == '__main__':
     # - Multi
     sample_best_buy_item_id = "6401728"
     sample_keyword = "yeezy"
-
-    # amazon
-    # item_res_amazon = fetch_item_amazon(sample_amazon_item_id)
-    # keyword_res_amazon = fetch_keyword_amazon(sample_keyword)
-
-    # amazon_item_price = get_item_price_amazon(sample_amazon_item_id)
-    # amazon_item_name = get_item_name_amazon(item_res_amazon)
-    # amazon_keyword_price = get_keyword_avg_price_amazon(keyword_res_amazon)
-
-    # print(amazon_item_price)
-    # print(amazon_item_name)
-    # print(amazon_keyword_price)
-
-    # bestbuy
-    # item_res_bestbuy = fetch_item_bestbuy(sample_best_buy_item_id)
-    # keyword_res_bestbuy = fetch_keyword_bestbuy(sample_keyword)
-
-    # get_item_price_bestbuy(item_res_bestbuy)
-    # get_item_name_bestbuy(item_res_bestbuy)
-    # avg_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
-
-    # compare price keyword
-    # res = compare_prices(sample_keyword)
-    # # print(res)
-
-    # compare price item amazon
-    # res = compare_prices(None, sample_amazon_item_id, 'amazon')
-    # # print(res)
-
-    # compare price item bestbuy
-    # res = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
-    # print(res)
-
-    # log_product_prices()
-    # log_keyword_prices()
