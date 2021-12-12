@@ -1,5 +1,4 @@
-from os import access
-from flask import Flask, render_template, request, jsonify, redirect, session
+from flask import Flask, render_template, request, redirect, session
 from flask_cors import CORS
 import requests
 
@@ -51,7 +50,7 @@ def login():
         session["uid"] = uid
         return redirect("subscription")
     return render_template("index.html", login_status="Bad email or password")
-    
+
 
 @app.route('/subscription', methods=['GET', 'POST'])
 def subscribe():
@@ -73,7 +72,6 @@ def subscribe():
             form["table"] = "subscription_keyword"
             form["sid"] = sid
             response = requests.get("https://whispering-peak-99211.herokuapp.com/query-select", data=form)
-            # print(response.json())
             user["keyword"].append(response.json()[0][1])
         data["table"] = "user_subcription_product_id"
         response = requests.get("https://whispering-peak-99211.herokuapp.com/query-select", data=data)
@@ -90,27 +88,27 @@ def subscribe():
             print(response.json())
             user["product_id"].append(response.json()[0][2])
 
-    
     email = session.get("email")
     user["accesstoken"] = session.get("access_token")
     user["email"] = session.get("email")
     user["login_status"] = "Welcome, " + str(email)
     user["uid"] = session.get("uid")
-    #print(access_token)
     if user["accesstoken"] is not None:
         return render_template("front_subscribe.html", user=user)
     return redirect("/")
 
-@app.route('/show-all-subscription')
-def all_subscription():
-    pass
 
-
-@app.route('/price-compare')
-def price_compare():
-    pass
+@app.route('/update-interval', methods=['POST'])
+def interval_update():
+    interval = request.form['interval']
+    access_token = request.form['access_token']
+    form = {}
+    form['notification_interval'] = interval
+    form['access_token'] = access_token
+    requests.post("https://whispering-peak-99211.herokuapp.com/update-email-preference", data=form)
+    return "successfully updated notification interval."
 
 
 if __name__ == '__main__':
-    app.secret_key = "yuki is sooooooooooooooooooooooo stupid"
+    app.secret_key = "4156_LYPZ"
     app.run(debug=True, host='127.0.0.1')
