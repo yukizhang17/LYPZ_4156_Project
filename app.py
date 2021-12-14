@@ -168,11 +168,11 @@ def unsubscribe():
     #  print("respond", respond)
     return jsonify({"reason": respond[1], "status_code": respond[0]})
 
+
 @app.route('/query-select', methods=['GET'])
 def query_select():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -193,8 +193,7 @@ def query_select():
 @app.route('/query-insert', methods=['POST'])
 def query_insert():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -215,8 +214,7 @@ def query_insert():
 @app.route('/query-delete', methods=['POST'])
 def query_delete():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -237,8 +235,7 @@ def query_delete():
 @app.route('/query-update', methods=['POST'])
 def query_update():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -275,15 +272,17 @@ def update_email_preference():
     else:
         uid = get_user_id(form["access_token"])
 
-    if form["notification_interval"] not in ["off", "monthly", "weekly", "daily"]:
+    intervals = ["off", "monthly", "weekly", "daily"]
+
+    if form["notification_interval"] not in intervals:
         return jsonify({
            "reason": "invalid interval",
            "status_code": 400})
 
     SqliteService.update(
          "user",
-         {"notification_interval":form["notification_interval"]},
-         {"uid":uid}
+         {"notification_interval": form["notification_interval"]},
+         {"uid": uid}
     )
 
     return jsonify({"status_code": 200})

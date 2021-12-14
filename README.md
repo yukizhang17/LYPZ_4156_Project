@@ -289,15 +289,15 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
 
    ```
 
-   <!-- ## 
+   ## 
 
-   ### 9. Compare prices for a keyword or product ID
+   ### 9. Compare prices for a keyword or product ID （Local only）
    
    **HTTP Request:**
    
    ```
-   POST https://whispering-peak-99211.herokuapp.com/compare
-     
+   POST http://127.0.0.1:5000/compare
+
    Content-Type: application/x-www-form-urlencoded
 
    Input: access_token=YOUR_TOKEN&keyword=KEYWORD&item_id=PRODUCT_ID&platform=PRODUCT_PLATFORM
@@ -318,7 +318,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
       "timestamp": "2021-11-15 08:47:09.543926"
     }
 
-   ``` -->
+   ```
  
 ### Client:
 ## 
@@ -329,5 +329,5 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
     ```
 2. Access frontend 
     ```
-    visit http://localhost:5000/ in your browser
+    visit http://localhost:3000/ in your browser
     ```

@@ -30,15 +30,6 @@ class Test_TestUserServices(unittest.TestCase):
         form["user"] = "4156"
         self.assertTrue(validate_all_api_form_fields(requirement, form))
 
-        # Testcase 6:
-    def test_check_email(self):
-        self.assertFalse(valid_email(""))
-        self.assertFalse(valid_email("asdasd"))
-        self.assertFalse(valid_email("asdadad@"))
-        self.assertFalse(valid_email("dededad@gmail"))
-        self.assertTrue(valid_email("asdad@gmail.com"))
-        self.assertTrue(valid_email("daioda@columbia.edu"))
-
     # Testcase 2:
     def test_signup_request(self):
         email = uuid.uuid4().hex
@@ -112,6 +103,16 @@ class Test_TestUserServices(unittest.TestCase):
 
         self.assertTrue(get_user_id(access_token) == id)
         self.assertFalse(get_user_id(access_token[0:-1]))
+
+    # Testcase 6:
+    def test_check_email(self):
+        self.assertFalse(valid_email(""))
+        self.assertFalse(valid_email("asdasd"))
+        self.assertFalse(valid_email("asdadad@"))
+        self.assertFalse(valid_email("dededad@gmail"))
+        self.assertTrue(valid_email("asdad@gmail.com"))
+        self.assertTrue(valid_email("daioda@columbia.edu"))
+
 
 if __name__ == '__main__':
     unittest.main()
