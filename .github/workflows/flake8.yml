@@ -24,7 +24,9 @@
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 name: Lint
 
-on: [push, pull_request]
+on: 
+  push:
+    branches: [ main ]
 
 jobs:
   flake8_py3:
