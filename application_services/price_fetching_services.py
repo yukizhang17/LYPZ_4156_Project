@@ -45,11 +45,11 @@ BESTBUY_API_KEY = "nU3Uo9RMMpqKmrhpm2if81bl"
 
 
 # local host config
-# DB_URL = "http://127.0.0.1:5000/"
+DB_URL = "http://127.0.0.1:5000/"
 
 
 # aws lambda & github CI config
-DB_URL = "https://whispering-peak-99211.herokuapp.com/"
+# DB_URL = "https://whispering-peak-99211.herokuapp.com/"
 
 
 DB_SELECT_URL = DB_URL + 'query-select'
@@ -124,8 +124,10 @@ def fetch_item_bestbuy(item_id):
             "Connection": "close",
         }
         # print(url)
-        response = requests.get(url, headers=headers)
-        return response
+        # response = requests.get(url, headers=headers)
+        driver.get(url)
+        content = driver.find_element_by_tag_name('pre').text
+        return content
     except Exception as e:
         print(e)
         traceback.print_exc()
@@ -144,12 +146,10 @@ def fetch_keyword_bestbuy(keyword):
 			"Accept": "*/*", 
 			"Connection": "close", 
 		}
-        response = requests.get(url, headers=headers)
-        
+        content = requests.get(url, headers=headers).content
         # driver.get(url)
-        # response = driver.page_source
-
-        return response
+        # content = driver.page_source
+        return content
     except Exception as e:
         print(e)
         traceback.print_exc()
@@ -157,9 +157,8 @@ def fetch_keyword_bestbuy(keyword):
 
 
 # get product price from amazon product web page
-def get_item_price_amazon(response):
+def get_item_price_amazon(content):
     try:
-        content = response
         soup = BeautifulSoup(content, 'html.parser')
         info = soup.find('div', {'class': 'cardRoot'})
 
@@ -177,9 +176,8 @@ def get_item_price_amazon(response):
 
 
 # get product name from amazon product web page
-def get_item_name_amazon(response):
+def get_item_name_amazon(content):
     try:
-        content = response
         soup = BeautifulSoup(content, 'html.parser')
         title_span = soup.find('span', {'id': 'productTitle'})
 
@@ -197,9 +195,8 @@ def get_item_name_amazon(response):
 
 
 # get average product price from amazon keyword search web page
-def get_keyword_avg_price_amazon(response, keyword=None):
+def get_keyword_avg_price_amazon(content, keyword=None):
     try:
-        content = response
         soup = BeautifulSoup(content, 'html.parser')
         search_results = soup.select('div.s-result-item.s-asin')
         prices = []
@@ -244,14 +241,14 @@ def get_keyword_avg_price_amazon(response, keyword=None):
 
 
 # get product price from bestbuy product information
-def get_item_price_bestbuy(response):
+def get_item_price_bestbuy(content):
     try:
-        response_json = json.loads(response.content)
+        content_json = json.loads(content)
         price = None
-        if 'onSale' in response_json and response_json['onSale'] is True:
-            price = response_json['salePrice']
-        elif 'regularPrice' in response_json:
-            price = response_json['regularPrice']
+        if 'onSale' in content_json and content_json['onSale'] is True:
+            price = content_json['salePrice']
+        elif 'regularPrice' in content_json:
+            price = content_json['regularPrice']
         return price
     except Exception as e:
         print(e)
@@ -260,9 +257,9 @@ def get_item_price_bestbuy(response):
 
 
 # get product name from bestbuy product information
-def get_item_name_bestbuy(response):
+def get_item_name_bestbuy(content):
     try:
-        response_json = json.loads(response.content)
+        response_json = json.loads(content)
         name = response_json['name']
         return name
     except Exception as e:
@@ -272,10 +269,8 @@ def get_item_name_bestbuy(response):
 
 
 # get average product price from bestbuy keyword search web page
-def get_keyword_avg_price_bestbuy(response, keyword=None):
+def get_keyword_avg_price_bestbuy(content, keyword=None):
     try:
-        content = response.content
-        #content = response
         soup = BeautifulSoup(content, 'html.parser')
         search_results = soup.select('li.sku-item')
 
@@ -515,44 +510,5 @@ def log_keyword_prices():
     return count
 
 if __name__ == '__main__':
-    # Nintendo Switch (Grey)
-    sample_amazon_item_id = "B08SR7YK5D"
-    # Nintendo - Switch - Animal Crossing: New Horizons Edition 32GB Console
-    # - Multi
-    sample_best_buy_item_id = "6401728"
-    sample_keyword = "yeezy"
-
-    # amazon
-    # item_res_amazon = fetch_item_amazon(sample_amazon_item_id)
-    # keyword_res_amazon = fetch_keyword_amazon(sample_keyword)
-
-    # amazon_item_price = get_item_price_amazon(sample_amazon_item_id)
-    # amazon_item_name = get_item_name_amazon(item_res_amazon)
-    # amazon_keyword_price = get_keyword_avg_price_amazon(keyword_res_amazon)
-
-    # print(amazon_item_price)
-    # print(amazon_item_name)
-    # print(amazon_keyword_price)
-
-    # bestbuy
-    # item_res_bestbuy = fetch_item_bestbuy(sample_best_buy_item_id)
-    # keyword_res_bestbuy = fetch_keyword_bestbuy(sample_keyword)
-
-    # get_item_price_bestbuy(item_res_bestbuy)
-    # get_item_name_bestbuy(item_res_bestbuy)
-    # avg_price = get_keyword_avg_price_bestbuy(keyword_res_bestbuy)
-
-    # compare price keyword
-    # res = compare_prices(sample_keyword)
-    # # print(res)
-
-    # compare price item amazon
-    # res = compare_prices(None, sample_amazon_item_id, 'amazon')
-    # # print(res)
-
-    # compare price item bestbuy
-    # res = compare_prices(None, sample_best_buy_item_id, 'bestbuy')
-    # print(res)
-
-    # log_product_prices()
-    # log_keyword_prices()
+    log_product_prices()
+    log_keyword_prices()
