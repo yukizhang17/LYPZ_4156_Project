@@ -2,6 +2,12 @@
 Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
 
 ## Usage:
+### Option 1: Heroku
+   ```
+   https://whispering-peak-99211.herokuapp.com/
+   ```
+
+### Option 2: Local
 ### Installation:
 1. Clone the repo
    ```
@@ -38,7 +44,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   GET http://localhost:5000/generate-apikey
+   GET https://whispering-peak-99211.herokuapp.com/generate-apikey
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -63,7 +69,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/generate-apikey
+   POST https://whispering-peak-99211.herokuapp.com/generate-apikey
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -91,7 +97,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/signup
+   POST https://whispering-peak-99211.herokuapp.com/signup
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -120,7 +126,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   GET http://localhost:5000/login
+   GET https://whispering-peak-99211.herokuapp.com/login
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -145,7 +151,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   GET http://localhost:5000/userinfo
+   GET https://whispering-peak-99211.herokuapp.com/userinfo
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -172,7 +178,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/subscribe
+   POST https://whispering-peak-99211.herokuapp.com/subscribe
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -201,7 +207,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/subscribe
+   POST https://whispering-peak-99211.herokuapp.com/subscribe
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -227,12 +233,12 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    
    ## 
 
-   ### 7. Subscribe with keyword
+   ### 7. Unsubscribe with keyword
    
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/unsubscribe
+   POST https://whispering-peak-99211.herokuapp.com/unsubscribe
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -256,12 +262,12 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    
    ## 
 
-   ### 8. Subscribe with product ID
+   ### 8. Unsubscribe with product ID
    
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/unsubscribe
+   POST https://whispering-peak-99211.herokuapp.com/unsubscribe
      
    Content-Type: application/x-www-form-urlencoded
 
@@ -283,15 +289,15 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
 
    ```
 
-   <!-- ## 
+   ## 
 
-   ### 9. Compare prices for a keyword or product ID
+   ### 9. Compare prices for a keyword or product ID （Local only）
    
    **HTTP Request:**
    
    ```
-   POST http://localhost:5000/compare
-     
+   POST http://127.0.0.1:5000/compare
+
    Content-Type: application/x-www-form-urlencoded
 
    Input: access_token=YOUR_TOKEN&keyword=KEYWORD&item_id=PRODUCT_ID&platform=PRODUCT_PLATFORM
@@ -312,4 +318,16 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
       "timestamp": "2021-11-15 08:47:09.543926"
     }
 
-   ``` -->
+   ```
+ 
+### Client:
+## 
+1. Start the client service
+    ```
+    cd client
+    python3 app.py
+    ```
+2. Access frontend 
+    ```
+    visit http://localhost:3000/ in your browser
+    ```

@@ -1,0 +1,181 @@
+Run node_modules/.bin/newman run https://api.getpostman.com/collections/18341107-79bbc61e-e7f6-4152-9324-4a5adeb4ca38?apikey=PMAK-61b2c1164bfcca0051634938-5c324410856a5ab2615f8de871a45bd6de --environment https://api.getpostman.com/environments/18341107-2824841b-f489-4c15-aff1-dadab7242eb2?apikey=PMAK-61b2c1164bfcca0051634938-5c324410856a5ab2615f8de871a45bd6de
+4
+newman
+5
+
+6
+LYPZ_ALL
+7
+
+8
+→ signup_user1
+9
+  POST http://whispering-peak-99211.herokuapp.com/signup [200 OK, 391B, 565ms]
+10
+  ✓  signup_user1
+11
+
+12
+→ signup_user2
+13
+  POST http://whispering-peak-99211.herokuapp.com/signup [200 OK, 391B, 276ms]
+14
+  ✓  signup_user2
+15
+
+16
+→ login_user1
+17
+  GET http://whispering-peak-99211.herokuapp.com/login [200 OK, 2.2kB, 508ms]
+18
+  ✓  login_user1
+19
+
+20
+→ login_user2
+21
+  GET http://whispering-peak-99211.herokuapp.com/login [200 OK, 264B, 253ms]
+22
+  ✓  login_user2
+23
+
+24
+→ get_user_info_user1
+25
+  GET http://whispering-peak-99211.herokuapp.com/userinfo [200 OK, 523B, 385ms]
+26
+  ✓  login_user1
+27
+
+28
+→ get_user_info_user2
+29
+  GET http://whispering-peak-99211.herokuapp.com/userinfo [200 OK, 252B, 166ms]
+30
+  ✓  login_user2
+31
+
+32
+→ update_email_preference
+33
+  GET http://whispering-peak-99211.herokuapp.com/update-email-preference [405 METHOD NOT ALLOWED, 430B, 37ms]
+34
+
+35
+→ subscribe_with_keyword
+36
+  POST http://whispering-peak-99211.herokuapp.com/subscribe [200 OK, 274B, 314ms]
+37
+  ✓  subscribe_with_keyword
+38
+
+39
+→ subscribe_with_keyword_user2
+40
+  POST https://whispering-peak-99211.herokuapp.com/subscribe [200 OK, 252B, 445ms]
+41
+  ✓  subscribe_with_keyword_user2
+42
+
+43
+→ Unsubscribe_with_keyword
+44
+  POST http://whispering-peak-99211.herokuapp.com/unsubscribe [200 OK, 262B, 462ms]
+45
+  ✓  subscribe_with_keyword
+46
+
+47
+→ Unsubscribe_with_keyword_user2
+48
+  POST http://whispering-peak-99211.herokuapp.com/unsubscribe [200 OK, 252B, 156ms]
+49
+  ✓  subscribe_with_keyword2
+50
+
+51
+→ subscribe_with_productID_Amazon
+52
+  POST http://whispering-peak-99211.herokuapp.com/subscribe [200 OK, 274B, 314ms]
+53
+  ✓  subscribe_with_productID_Amazon
+54
+
+55
+→ subscribe_with_productID_BestBuy
+56
+  POST http://whispering-peak-99211.herokuapp.com/subscribe [200 OK, 261B, 360ms]
+57
+  ✓  subscribe_with_productID_BestBuy
+58
+
+59
+→ subscribe_with_productID_user2
+60
+  POST https://whispering-peak-99211.herokuapp.com/subscribe [200 OK, 252B, 289ms]
+61
+  ✓  subscribe_with_productID_user2
+62
+
+63
+→ Unsubscribe_with_productID_Amazon
+64
+  POST https://whispering-peak-99211.herokuapp.com/unsubscribe [200 OK, 271B, 307ms]
+65
+  ✓  Unsubscribe_with_productID_Amazon
+66
+
+67
+→ Unsubscribe_with_productID_BestBuy
+68
+  POST https://whispering-peak-99211.herokuapp.com/unsubscribe [200 OK, 257B, 211ms]
+69
+  ✓  Unsubscribe_with_productID_BestBuy
+70
+
+71
+→ Unsubscribe_with_productID_BestBuy_user2
+72
+  POST https://whispering-peak-99211.herokuapp.com/unsubscribe [200 OK, 252B, 196ms]
+73
+  ✓  Unsubscribe_with_productID_BestBuy_user2
+74
+
+75
+┌─────────────────────────┬────────────────────┬────────────────────┐
+76
+│                         │           executed │             failed │
+77
+├─────────────────────────┼────────────────────┼────────────────────┤
+78
+│              iterations │                  1 │                  0 │
+79
+├─────────────────────────┼────────────────────┼────────────────────┤
+80
+│                requests │                 17 │                  0 │
+81
+├─────────────────────────┼────────────────────┼────────────────────┤
+82
+│            test-scripts │                 16 │                  0 │
+83
+├─────────────────────────┼────────────────────┼────────────────────┤
+84
+│      prerequest-scripts │                  2 │                  0 │
+85
+├─────────────────────────┼────────────────────┼────────────────────┤
+86
+│              assertions │                 16 │                  0 │
+87
+├─────────────────────────┴────────────────────┴────────────────────┤
+88
+│ total run duration: 5.5s                                          │
+89
+├───────────────────────────────────────────────────────────────────┤
+90
+│ total data received: 3.52kB (approx)                              │
+91
+├───────────────────────────────────────────────────────────────────┤
+92
+│ average response time: 308ms [min: 37ms, max: 565ms, s.d.: 132ms] │
+93
+└───────────────────────────────────────────────────────────────────┘
