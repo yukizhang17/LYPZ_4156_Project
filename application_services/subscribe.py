@@ -8,15 +8,22 @@ def get_subscribe_input(form):
     product = form["product"]
     type = form["type"]
 
-    # expected_price is optinal field
+    # expected_price is optional field
     if "expected_price" in form:
         expected_price = form["expected_price"]
         if expected_price:
-            new_expected_price = float(expected_price)
-        if new_expected_price < 0:
-            return (400, "Expected Price range (0,999999.99)")
-        if new_expected_price > 999999.99:
-            return (400, "Expected Price range (0,999999.99)")
+            try:
+                new_expected_price = float(expected_price)
+                # print("new_expected_price",)
+            except ValueError:
+                return (400, "invalid expected price")
+            if new_expected_price < 0:
+                return (400, "Expected Price range (0,999999.99)")
+            if new_expected_price > 999999.99:
+                return (400, "Expected Price range (0,999999.99)")
+        else:
+            new_expected_price = None
+
     else:
         new_expected_price = None
 
