@@ -2,6 +2,12 @@
 Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
 
 ## Usage:
+### Option 1: Heroku
+   ```
+   https://whispering-peak-99211.herokuapp.com/
+   ```
+
+### Option 2: Local
 ### Installation:
 1. Clone the repo
    ```
@@ -38,7 +44,7 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
    **HTTP Request:**
    
    ```
-   GET http://localhost:5000/generate-apikey
+   GET https://whispering-peak-99211.herokuapp.com/generate-apikey
      
    Content-Type: application/x-www-form-urlencoded
 
