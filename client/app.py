@@ -53,7 +53,7 @@ def login():
         session["access_token"] = access_token
         session["email"] = email
         session["uid"] = uid
-        return redirect("subscription")
+        return redirect("price-compare")
     return render_template("index.html", login_status="Bad email or password")
     
 
