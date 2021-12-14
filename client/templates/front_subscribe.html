@@ -64,15 +64,15 @@
         <label>Subscribe Type:</label><br>
         <input type="radio" id="productID" name="type" value="productID">
         <label for="productID">productID</label><br>
-        <input type="radio" id="type" name="type" value="keyword">
+        <input type="radio" id="keyword" name="type" value="keyword">
         <label for="keyword">keyword</label><br>
         <label>Platform:</label><br>
-        <input type="radio" id="bestbuy" name="platform" value="bestbuy">
-        <label for="bestbuy">BestBuy</label><br>
-        <input type="radio" id="amazon" name="platform" value="amazon">
-        <label for="amazon">Amazon</label><br>
+        <input type="radio" id="BestBuy" name="platform" value="BestBuy">
+        <label for="BestBuy">BestBuy</label><br>
+        <input type="radio" id="Amazon" name="platform" value="Amazon">
+        <label for="Amazon">Amazon</label><br>
         <label>Expected Price:</label><br>
-        <input type="text" id="expected_price" name="expected_price" value="Can be null"><br><br>
+        <input type="text" id="expected_price" name="expected_price" value="0"><br><br>
         <input type="hidden" id="access_token" name="access_token" value= "{{user.accesstoken}}"><br>
         <input id="subscribe_submit_button" type="submit" value="Subscribe" ><br><br><br>
     </form>
@@ -92,7 +92,7 @@
         <input type="radio" id="platform" name="platform" value="BestBuy">
         <label for="bestbuy">BestBuy</label><br>
         <input type="radio" id="platform" name="platform" value="Amazon">
-        <label for="amazon">Amazon</label><br><br>
+        <label for="Amazon">Amazon</label><br><br>
         <input type="hidden" id="access_token2" name="access_token" value="{{user.accesstoken}}" ><br>
         <input id="unsubscribe_submit_button" type="submit" value="Unsubscribe" ><br><br><br>
     </form>
