@@ -130,9 +130,12 @@ def price_compare():
             platform = form['platform']
         form = {}
         form["access_token"] = user["accesstoken"]
-        form["keyword"] = keyword
-        form["item_id"] = item_id
-        form["platform"] = platform
+        if keyword is not None:
+            form["keyword"] = keyword
+        if item_id is not None:
+            form["item_id"] = item_id
+        if platform is not None:
+            form["platform"] = platform
         response_json = requests.get(web + "/compare", data=form).json()          
         return render_template("compare_prices.html", user=user, response_json=response_json)
     
