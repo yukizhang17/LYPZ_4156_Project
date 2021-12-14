@@ -32,54 +32,27 @@ def home():
 # Generate 32 digit of unique token for each dev
 @app.route('/generate-apikey', methods=['GET', 'POST'])
 def generate_apikey():
-    # check if all require information are presented
-    form = request.form
-    if not validate_all_api_form_fields(["email", "password"], form):
-        return jsonify({
-            "reason": MISSING, "status_code": 400})
-
-    email = form['email']
-    password = form['password']
-
-    if request.method == "GET":
-        # Login with Auth0 to see if application exist
-        rst = SqliteService.select("application", {"email": email})
-        if len(rst) == 0:
-            return jsonify({"error": "user not found", "status_code": 404})
-
+    rst = SqliteService.select("application", {"email": email})
+    if len(rst) > 0:
         response = login_request(email + "_APP", password)
 
         if "access_token" not in response:
             return jsonify(response)
         # If email already verified, return api key
-        if rst[0][2] == 1:
-            return jsonify({"api_key": rst[0][1], "status_code": 200})
-
-        # If email verified, update db and return api_key
-        response = validate_token(response["access_token"])
-
-        if not response["email_verified"]:
-            return jsonify({
-                "error": "Please verify your email", "status_code": 401})
-
-        SqliteService.update("application", {"verified": 1}, {"email": email})
         return jsonify({"api_key": rst[0][1], "status_code": 200})
 
-    if request.method == "POST":
-        # If already signup, return error
-        response = signup_request(email, password).json()
-        if "statusCode" in response and response["statusCode"] == 400:
-            response["status_code"] = response["statusCode"]
-            return jsonify(response)
+    # If already signup, return error
+    response = signup_request(email, password).json()
+    if "statusCode" in response and response["statusCode"] == 400:
+        response["status_code"] = response["statusCode"]
+        return jsonify(response)
 
-        # generate api_key
-        token = uuid.uuid4().hex
-        SqliteService.insert("application", {
-            "email": email, "api_key": token, "verified": 0})
+    # generate api_key
+    token = uuid.uuid4().hex
+    SqliteService.insert("application", {
+        "email": email, "api_key": token, "verified": 0})
 
-        return jsonify({
-            "message": "token created, please verified your email ",
-            "status_code": 200})
+    return jsonify({"api_key": token, "status_code": 200})
 
 
 # user signup end point
@@ -195,11 +168,11 @@ def unsubscribe():
     #  print("respond", respond)
     return jsonify({"reason": respond[1], "status_code": respond[0]})
 
+
 @app.route('/query-select', methods=['GET'])
 def query_select():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -220,8 +193,7 @@ def query_select():
 @app.route('/query-insert', methods=['POST'])
 def query_insert():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -242,8 +214,7 @@ def query_insert():
 @app.route('/query-delete', methods=['POST'])
 def query_delete():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -264,8 +235,7 @@ def query_delete():
 @app.route('/query-update', methods=['POST'])
 def query_update():
     form = request.form
-    if not validate_all_api_form_fields(
-        ["access_token", "table"], form):
+    if not validate_all_api_form_fields(["access_token", "table"], form):
         return jsonify({
             "reason": MISSING,
             "status_code": 400})
@@ -302,15 +272,17 @@ def update_email_preference():
     else:
         uid = get_user_id(form["access_token"])
 
-    if form["notification_interval"] not in ["off", "monthly", "weekly", "daily"]:
+    intervals = ["off", "monthly", "weekly", "daily"]
+
+    if form["notification_interval"] not in intervals:
         return jsonify({
            "reason": "invalid interval",
            "status_code": 400})
 
     SqliteService.update(
          "user",
-         {"notification_interval":form["notification_interval"]},
-         {"uid":uid}
+         {"notification_interval": form["notification_interval"]},
+         {"uid": uid}
     )
 
     return jsonify({"status_code": 200})
