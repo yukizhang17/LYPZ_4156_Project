@@ -319,3 +319,15 @@ Class Project for COMS 4156 Advanced Software Engineering Fall 2021.
     }
 
    ``` -->
+ 
+### Client:
+## 
+1. Start the client service
+    ```
+    cd client
+    python3 app.py
+    ```
+2. Access frontend 
+    ```
+    visit http://localhost:5000/ in your browser
+    ```
