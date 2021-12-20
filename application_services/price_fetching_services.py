@@ -510,5 +510,7 @@ def log_keyword_prices():
     return count
 
 if __name__ == '__main__':
+    print("logging prices for subscribed product IDs...")
     log_product_prices()
+    print("logging prices for subscribed keywords...")
     log_keyword_prices()
