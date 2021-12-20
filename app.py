@@ -32,6 +32,14 @@ def home():
 # Generate 32 digit of unique token for each dev
 @app.route('/generate-apikey', methods=['GET', 'POST'])
 def generate_apikey():
+    form = request.form
+    if not validate_all_api_form_fields(
+            ["email", "password"], form):
+        return jsonify({
+            "reason": MISSING, "status_code": 400})
+    email = form["email"]
+    password = form["password"]
+
     rst = SqliteService.select("application", {"email": email})
     if len(rst) > 0:
         response = login_request(email + "_APP", password)
